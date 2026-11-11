@@ -219,19 +219,19 @@ def ef_note(factor_id: str) -> str:
 
 
 def pci_note(factor_id: str, unit: str, pci_source: str) -> str:
-    """One line with the calorific value (and density) the calculation will use."""
+    """Short line with the calorific value (and density) the calculation will use."""
     from ghg_toolkit import load_fuel_properties
     from ghg_toolkit.factors import get_factor
 
     if unit in ("MJ", "TJ"):
-        return T("Poder calorífico: no se usa, porque la cantidad ya está en unidades de energía.")
+        return T("PCI: no se usa (cantidad en energía).")
     props = load_fuel_properties().loc[get_factor(factor_id)["fuel"]]
     wanted = "MJ/m3" if unit == "m3" else "MJ/kg"
     source = pci_source if props[f"pci_{pci_source}_unit"] == wanted else ("ipcc" if pci_source == "bne" else "bne")
-    label = T("Chile, BNE") if source == "bne" else "IPCC 2006, Vol. 2, " + T("cuadro") + " 1.2"
-    note = f"{T('Poder calorífico inferior')}: {short(float(props[f'pci_{source}']))} {wanted} ({label})"
+    label = "Chile, BNE" if source == "bne" else "IPCC 2006"
     if source != pci_source:
-        note += ". " + T("La fuente elegida no tiene valor en esta unidad, así que se usa la otra.")
+        label += f"; {'BNE' if pci_source == 'bne' else 'IPCC'} {T('no tiene valor en')} {unit}"
+    note = f"{T('PCI')}: {short(float(props[f'pci_{source}']))} {wanted} ({label})"
     if unit == "L":
         note += f" · {T('Densidad')}: {short(float(props['density']))} kg/L"
     return note

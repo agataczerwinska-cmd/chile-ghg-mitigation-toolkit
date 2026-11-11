@@ -89,7 +89,7 @@ def render() -> None:
             horizontal=True,
             key=f"grid_pci_{lang()}",
         )
-        st.caption(T("Solo se usa en las filas donde escribes el combustible quemado. En las filas con eficiencia, la energía del combustible sale de generación ÷ eficiencia, así que el poder calorífico no cambia el resultado."))
+        st.caption(T("Solo se usa en filas con combustible quemado."))
         pci_box = st.container()
         losses = num_input(T("Pérdidas de transmisión y distribución (%)"), 0.0, 99.0, 0.0, key="grid_losses", help=T("Si las indicas, también se calcula el factor por kWh consumido, que es mayor que el factor por kWh generado."))
 
@@ -132,7 +132,7 @@ def render() -> None:
             if p["factor_id"] == RENEWABLE:
                 continue
             if p.get("fuel_quantity"):
-                st.caption(f"{p['name']}: {pci_note(p['factor_id'], p['fuel_unit'], pci_source)}")
+                st.caption(f"{p['name']} · {pci_note(p['factor_id'], p['fuel_unit'], pci_source)}")
                 steps = breakdown_from_quantity(p["fuel_quantity"], p["fuel_unit"], p["factor_id"], pci_source)
                 fuel_tj = float(steps[steps["Unidad"] == "TJ"]["Valor"].iloc[0])
                 implied = p["generation_mwh"] * 0.0036 / fuel_tj * 100 if fuel_tj else float("inf")
@@ -143,7 +143,7 @@ def render() -> None:
                     st.caption(message)
             else:
                 unit = next(u for u in units_for(p["factor_id"]) if u not in ("MJ", "TJ"))
-                st.caption(f"{p['name']}: {pci_note(p['factor_id'], unit, pci_source)}. " + T("No se usa en esta fila, porque se calcula con la eficiencia."))
+                st.caption(f"{p['name']} · {pci_note(p['factor_id'], unit, pci_source)} · " + T("no se usa en esta fila"))
 
     with right:
         st.subheader(T("Resultado"))
