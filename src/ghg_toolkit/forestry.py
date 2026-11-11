@@ -87,3 +87,43 @@ def breakdown_from_forest_growth(
         ("Volumen que crece en un año", volume, "m3", "ha × m3/ha/año"),
     ]
     return breakdown_from_wood_volume(volume, species, True, overrides, first)
+
+
+def breakdown_from_biomass_growth(
+    area_ha: float,
+    growth_t_ha_year: float,
+    species: str,
+    overrides: Optional[dict] = None,
+    growth_source: str = "dato",
+) -> pd.DataFrame:
+    """Annual capture from above-ground biomass growth in t dry matter/ha/year.
+
+    This is the unit of Chile's inventory growth tables (INGEI 2024). The
+    growth is taken as above-ground biomass, so density and the expansion
+    factor are not applied; roots, carbon fraction and 44/12 are.
+    """
+    own = overrides or {}
+    f = load_forest_factors().loc[species]
+    root = float(own.get("root_ratio", f["root_ratio"]))
+    fc = float(own.get("carbon_fraction", CARBON_FRACTION))
+    above = area_ha * growth_t_ha_year
+    total_biomass = above * (1 + root)
+    carbon = total_biomass * fc
+    co2 = carbon * C_TO_CO2
+    rows = [
+        ("Superficie", area_ha, "ha", "dato"),
+        ("Crecimiento anual de biomasa", growth_t_ha_year, "t materia seca/ha/año", growth_source),
+        ("Biomasa aérea que crece en un año", above, "t materia seca", "ha × t/ha/año"),
+        ("Proporción de raíces (R)", root, "–", "dato propio" if "root_ratio" in own else str(f["source"])),
+        ("Biomasa total (aérea + raíces)", total_biomass, "t materia seca", "biomasa aérea × (1 + R)"),
+        ("Fracción de carbono (FC)", fc, "t C/t materia seca", "dato propio" if "carbon_fraction" in own else "IPCC 2006"),
+        ("Carbono", carbon, "t C", "biomasa total × FC"),
+        ("Conversión de C a CO2", C_TO_CO2, "t CO2/t C", "44 ÷ 12"),
+        ("CO2 capturado", co2, "t CO2", "t C × 3,667"),
+        ("TOTAL", -co2 * 1000, "kg CO2e", "captura: signo negativo"),
+        ("TOTAL", -co2, "t CO2e", "captura: signo negativo"),
+    ]
+    df = pd.DataFrame(rows, columns=["Paso", "Valor", "Unidad", "Cálculo / fuente"])
+    df["Valor"] = df["Valor"].astype(float)
+    df.index = range(1, len(df) + 1)
+    return df

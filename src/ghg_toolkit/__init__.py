@@ -15,9 +15,11 @@ from .electrification import (
     breakdown_electric_vehicle,
 )
 from .electricity import breakdown_from_electricity
+from .footprint import CATEGORIES, footprint, source_emissions
 from .grid import RENEWABLE, grid_factor, plant_emissions
-from .forestry import breakdown_from_forest_growth, breakdown_from_wood_volume
+from .forestry import breakdown_from_biomass_growth, breakdown_from_forest_growth, breakdown_from_wood_volume
 from .factors import (
+    load_forest_growth,
     load_forest_factors,
     TABLE_FILES,
     load_waste_parameters,
@@ -34,6 +36,11 @@ from .waste import fod_series, half_life_years
 from .transport import emissions_from_distance, emissions_from_fuel_volume
 
 __all__ = [
+    "breakdown_from_biomass_growth",
+    "load_forest_growth",
+    "CATEGORIES",
+    "footprint",
+    "source_emissions",
     "RENEWABLE",
     "grid_factor",
     "plant_emissions",

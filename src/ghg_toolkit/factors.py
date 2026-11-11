@@ -56,7 +56,14 @@ def load_forest_factors() -> pd.DataFrame:
     return pd.read_csv(DATA_DIR / "forest_factors.csv").set_index("species")
 
 
+@lru_cache(maxsize=None)
+def load_forest_growth() -> pd.DataFrame:
+    """Annual biomass growth (t dry matter/ha/year) by forest type and region, INGEI 2024."""
+    return pd.read_csv(DATA_DIR / "forest_growth.csv")
+
+
 TABLE_FILES = {
+    "forest_growth.csv": load_forest_growth,
     "forest_factors.csv": load_forest_factors,
     "emission_factors.csv": load_emission_factors,
     "fuel_properties.csv": load_fuel_properties,

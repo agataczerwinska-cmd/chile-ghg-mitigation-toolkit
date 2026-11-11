@@ -55,6 +55,7 @@ def test_step_tables_are_fully_translated():
         breakdown_from_electricity(10, "MWh", 0.3, "SEN (Chile)", 4),
         breakdown_from_wood_volume(1000, "Especies nativas", overrides={"feb": 2}),
         breakdown_from_forest_growth(100, 6, "Pino insigne (Pinus radiata)"),
+        __import__("ghg_toolkit").breakdown_from_biomass_growth(100, 12, "Pino insigne (Pinus radiata)", growth_source="INGEI 2024 (incremento medio anual)"),
         fod_series({2020: 1000, 2021: 1000}, doc=0.15, k=0.19, mcf=1.0).reset_index(),
     ]
     for table in tables:
@@ -74,6 +75,8 @@ def test_every_data_label_has_a_translation():
         + list(load_grid_factors().index)
         + list(params[params["parameter"].isin(["DOC", "MCF"])]["item"])
         + ["Central a carbón", "Ciclo combinado", "Parque solar", "Parque eólico"]
+        + list(__import__("ghg_toolkit").CATEGORIES)
+        + list(__import__("ghg_toolkit").load_forest_growth()["type"].unique())
         + PLANNED
         + list(SECTIONS)
         + [title for entries in SECTIONS.values() for title, *_ in entries]

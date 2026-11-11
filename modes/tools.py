@@ -17,6 +17,7 @@ TABLE_NAMES = {
     "Factores de la red eléctrica": "grid_emission_factors.csv",
     "Residuos: DOC, k, MCF": "waste_parameters.csv",
     "Forestal: densidad, FEB y raíces": "forest_factors.csv",
+    "Forestal: crecimiento anual (INGEI 2024)": "forest_growth.csv",
     "Densidad de la leña por especie": "wood_density.csv",
 }
 assert set(TABLE_NAMES.values()) == set(TABLE_FILES)

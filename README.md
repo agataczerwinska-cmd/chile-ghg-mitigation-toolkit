@@ -36,8 +36,9 @@ step, its value, its unit and its source.
 | Electrifying a machine or vehicle (fuel vs electric, by useful work or by distance, for one unit or a fleet) | Efficiencies or consumption per km, grid factor, break-even | Done |
 | Grid emission factor of a country, region or generating company, built plant by plant | Emissions of all plants / electricity generated, with optional losses | Done |
 | Landfill methane | IPCC 2006 Vol. 5, First Order Decay | Done |
-| Forest land: wood volume to CO2 (harvest, firewood, growth) | IPCC 2006 with Chilean national factors (Gayoso et al.) | Done |
-| Agriculture, carbon footprints, mitigation projects, scenarios | – | Planned |
+| Forest land: wood volume to CO2 (harvest, firewood, fire, growth) | IPCC 2006 with Chilean national factors (Gayoso et al.) and inventory growth tables (INGEI 2024) | Done |
+| Organisational carbon footprint by scope (HuellaChile report structure, NCh-ISO 14064-1) | Activity data x emission factor; fuels, grid electricity, refrigerants, own factors | Done |
+| Agriculture, municipal and event footprints, mitigation projects, scenarios | – | Planned |
 
 It also compares saved scenarios across sectors and shows every reference
 table. When run locally the tables are editable, so country-specific (Tier 2)
@@ -78,6 +79,7 @@ Worked examples are in [`notebooks/`](notebooks/).
 | `data/wood_density.csv` | Firewood density by species | Named per row |
 | `data/grid_emission_factors.csv` | Electricity grid factors for Chile's SEN | To be documented |
 | `data/forest_factors.csv` | Wood density, biomass expansion factor and root ratio by species | INGEI Chile; Gayoso et al. 2002 |
+| `data/forest_growth.csv` | Annual biomass growth by plantation species and region, and by native forest type | INGEI 2024 |
 | `data/waste_parameters.csv` | Landfill model parameters (DOC, k, MCF) | IPCC 2006 Vol. 5 and INGEI Chile |
 
 - Net calorific values default to Chile's BNE figures (gross value x 0.95 for

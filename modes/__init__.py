@@ -4,7 +4,7 @@ To add a calculator: create a file here with a render() function, then add
 one line to SECTIONS below (and its English names to i18n.py).
 """
 
-from . import combustion, electricity, electrification, forestry, grid, tools, waste
+from . import combustion, electricity, electrification, footprint, forestry, grid, tools, waste
 
 # section -> [(page title, address, icon, function)]
 SECTIONS = {
@@ -20,6 +20,9 @@ SECTIONS = {
     "Uso de la tierra": [
         ("Bosques", "forests", ":material/forest:", forestry.render),
     ],
+    "Huella de carbono": [
+        ("Huella organizacional", "organisation", ":material/apartment:", footprint.render),
+    ],
     "Herramientas": [
         ("Comparar escenarios", "compare", ":material/compare_arrows:", tools.render_compare),
         ("Factores y tablas", "tables", ":material/table:", tools.render_tables),
@@ -28,7 +31,7 @@ SECTIONS = {
 
 PLANNED = [
     "Agropecuario",
-    "Huella de carbono (organizacional, comunal, eventos)",
+    "Huella de carbono comunal y de eventos",
     "Proyectos de mitigación y análisis económico",
     "Escenarios y proyección",
 ]
