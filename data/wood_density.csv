@@ -1,0 +1,10 @@
+species,scientific_name,density_min,density_max,unit,type,source
+Roble / hualle,Nothofagus obliqua,720,720,kg/m3 sólido,Seca,INTI-CITEMA 2003
+Roble / hualle,Nothofagus obliqua,1220,1220,kg/m3 sólido,Verde (húmeda),INTI-CITEMA 2003
+Espino,Vachellia caven,865.8,865.8,kg/m3 sólido,Normal,U. de Chile
+Espino,Vachellia caven,704.8,704.8,kg/m3 sólido,Básica,U. de Chile
+Quillay,Quillaja saponaria,793,793,kg/m3 sólido,Normal,U. de Chile
+Quillay,Quillaja saponaria,652.3,652.3,kg/m3 sólido,Básica,U. de Chile
+Lenga,Nothofagus pumilio,442,442,kg/m3 sólido,Básica,U. de Chile
+Eucalipto (rebrotes jóvenes),Eucalyptus globulus,380,450,kg/m3 sólido,Básica,Rev. Mex. Cienc. For. 2018
+Aromo (rebrotes jóvenes),Acacia dealbata,380,450,kg/m3 sólido,Básica,Rev. Mex. Cienc. For. 2018
