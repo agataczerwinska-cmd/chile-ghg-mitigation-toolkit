@@ -27,7 +27,7 @@ pages = {
 }
 page = st.navigation(pages)
 
-_, language_column = st.columns([4, 1])
+language_column, _ = st.columns([1, 4])
 with language_column:
     st.segmented_control("Language / Idioma", list(LANGUAGES), key="lang_choice", selection_mode="single", label_visibility="collapsed")
 

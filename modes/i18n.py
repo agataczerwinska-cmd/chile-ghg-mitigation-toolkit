@@ -52,6 +52,7 @@ UI = {
     "Solo se usa en las filas donde escribes el combustible quemado. En las filas con eficiencia, la energía del combustible sale de generación ÷ eficiencia, así que el poder calorífico no cambia el resultado.": "Only used in rows where you enter the fuel burned. In rows with an efficiency, the fuel energy comes from generation ÷ efficiency, so the calorific value does not change the result.",
     "Ninguna fila tiene combustible quemado, así que el poder calorífico no se usa: todas calculan la energía con la eficiencia.": "No row has fuel burned, so the calorific value is not used: every row calculates energy from the efficiency.",
     "Factores de emisión usados": "Emission factors used",
+    "No se usa en esta fila, porque se calcula con la eficiencia.": "Not used in this row, because it is calculated from the efficiency.",
     "CO2 (biogénico, no suma al total)": "CO2 (biogenic, not added to the total)",
     "Emisión (kg de gas)": "Emission (kg of gas)",
     "En CO2e (kg)": "As CO2e (kg)",

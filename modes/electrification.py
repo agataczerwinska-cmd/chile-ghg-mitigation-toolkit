@@ -32,7 +32,7 @@ def render() -> None:
     with left:
         st.subheader(T("1. Equipo a combustible"))
         sectors = [s for s in SECTORS if s in set(factors["ipcc_category"])]
-        sector = st.selectbox(T("Sector"), sectors, format_func=lambda c: f"{T(SECTORS[c])} ({c})", index=sectors.index("1A2"), key="el_sector")
+        sector = st.selectbox(T("Sector"), sectors, format_func=lambda c: f"{T(SECTORS[c])} ({c})", index=sectors.index("1A2"), key=f"el_sector_{lang()}")
         options = factors[factors["ipcc_category"] == sector]
         default = list(options.index).index("1A2_diesel_fuera_de_ruta") if sector == "1A2" else 0
         factor_id = st.selectbox(
@@ -45,23 +45,23 @@ def render() -> None:
         st.caption(ef_note(factor_id))
         units = units_for(factor_id)
         modes = [BY_ENERGY, BY_DISTANCE] if "L" in units else [BY_ENERGY]
-        mode = st.radio(T("Comparar por"), modes, format_func=T, index=len(modes) - 1 if sector == "1A3b" else 0, key=f"el_mode_{sector}")
-        pci_source = st.radio(
-            T("Poder calorífico"),
-            ["bne", "ipcc"],
-            format_func=lambda v: T({"bne": "Chile (BNE)", "ipcc": "IPCC por defecto"}[v]),
-            horizontal=True,
-            key="el_pci",
-        )
+        mode = st.radio(T("Comparar por"), modes, format_func=T, index=len(modes) - 1 if sector == "1A3b" else 0, key=f"el_mode_{sector}_{lang()}")
         if mode == BY_DISTANCE:
             km = num_input(T("Distancia al año por vehículo (km)"), value=60000.0, key="el_km")
-            economy_unit = st.radio(T("Rendimiento en"), ["km/L", "L/100 km"], horizontal=True, index=1, key="el_economy_unit")
+            economy_unit = st.radio(T("Rendimiento en"), ["km/L", "L/100 km"], horizontal=True, index=1, key=f"el_economy_unit_{lang()}")
             economy = num_input(f"{T('Rendimiento')} ({economy_unit})", 0.01, None, 45.0 if economy_unit == "L/100 km" else 2.2, key=f"el_economy_{economy_unit}")
             litres_per_100km = 100 / economy if economy_unit == "km/L" else economy
         else:
             unit = st.selectbox(T("Unidad"), units, format_func=lambda u: T(UNIT_NAMES[u]), key=f"el_unit_{factor_id}_{lang()}")
             quantity = num_input(f"{T('Combustible al año por equipo')} ({unit})", value=1500000.0, key="el_quantity")
             fuel_eff = num_input(T("Eficiencia del equipo a combustible (%)"), 1.0, 100.0, 35.0, key="el_eff_fuel", help=T("Parte de la energía del combustible que se convierte en trabajo o calor útil."))
+        pci_source = st.radio(
+            T("Poder calorífico"),
+            ["bne", "ipcc"],
+            format_func=lambda v: T({"bne": "Chile (BNE)", "ipcc": "IPCC por defecto"}[v]),
+            horizontal=True,
+            key=f"el_pci_{lang()}",
+        )
         st.caption(pci_note(factor_id, "L" if mode == BY_DISTANCE else unit, pci_source))
         n_units = num_input(T("Número de equipos o vehículos iguales"), 1.0, None, 1.0, key="el_units", help=T("La cantidad de arriba es por unidad; el resultado se multiplica por este número."))
 

@@ -87,9 +87,9 @@ def render() -> None:
             ["bne", "ipcc"],
             format_func=lambda v: T({"bne": "Chile (BNE)", "ipcc": "IPCC por defecto"}[v]),
             horizontal=True,
-            key="grid_pci",
-            help=T("Solo se usa en las filas donde escribes el combustible quemado. En las filas con eficiencia, la energía del combustible sale de generación ÷ eficiencia, así que el poder calorífico no cambia el resultado."),
+            key=f"grid_pci_{lang()}",
         )
+        st.caption(T("Solo se usa en las filas donde escribes el combustible quemado. En las filas con eficiencia, la energía del combustible sale de generación ÷ eficiencia, así que el poder calorífico no cambia el resultado."))
         pci_box = st.container()
         losses = num_input(T("Pérdidas de transmisión y distribución (%)"), 0.0, 99.0, 0.0, key="grid_losses", help=T("Si las indicas, también se calcula el factor por kWh consumido, que es mayor que el factor por kWh generado."))
 
@@ -128,12 +128,14 @@ def render() -> None:
     result = grid_factor(plants, losses / 100, pci_source)
 
     with pci_box:
-        with_fuel = [p for p in plants if p.get("fuel_quantity")]
-        if with_fuel:
-            for p in with_fuel:
+        for p in plants:
+            if p["factor_id"] == RENEWABLE:
+                continue
+            if p.get("fuel_quantity"):
                 st.caption(f"{p['name']}: {pci_note(p['factor_id'], p['fuel_unit'], pci_source)}")
-        else:
-            st.caption(T("Ninguna fila tiene combustible quemado, así que el poder calorífico no se usa: todas calculan la energía con la eficiencia."))
+            else:
+                unit = next(u for u in units_for(p["factor_id"]) if u not in ("MJ", "TJ"))
+                st.caption(f"{p['name']}: {pci_note(p['factor_id'], unit, pci_source)}. " + T("No se usa en esta fila, porque se calcula con la eficiencia."))
 
     with right:
         st.subheader(T("Resultado"))

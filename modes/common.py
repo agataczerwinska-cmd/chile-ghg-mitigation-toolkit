@@ -185,7 +185,7 @@ def grid_selector(key: str) -> tuple:
         T("Red"),
         options,
         format_func=lambda g: f"{T(CALCULATED_GRID)}: {calculated['name']}" if g == CALCULATED_GRID else T(g),
-        key=f"grid_{key}",
+        key=f"grid_{key}_{lang()}",
     )
     if grid == OWN_GRID:
         return num_input(T("Factor (kg CO2e/kWh)"), value=0.25, key=f"grid_factor_{key}"), "dato propio"
