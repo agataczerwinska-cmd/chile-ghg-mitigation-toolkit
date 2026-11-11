@@ -5,7 +5,7 @@ import streamlit as st
 
 from ghg_toolkit import RENEWABLE, grid_factor, load_emission_factors, load_fuel_properties, units_for
 
-from .common import header, num_input, number, precise
+from .common import ef_note, header, num_input, number, pci_note, precise
 from .i18n import T, lang
 
 RENEWABLE_LABEL = "Renovable: solar, eólica, hidro, geotermia (sin emisiones)"
@@ -88,7 +88,9 @@ def render() -> None:
             format_func=lambda v: T({"bne": "Chile (BNE)", "ipcc": "IPCC por defecto"}[v]),
             horizontal=True,
             key="grid_pci",
+            help=T("Solo se usa en las filas donde escribes el combustible quemado. En las filas con eficiencia, la energía del combustible sale de generación ÷ eficiencia, así que el poder calorífico no cambia el resultado."),
         )
+        pci_box = st.container()
         losses = num_input(T("Pérdidas de transmisión y distribución (%)"), 0.0, 99.0, 0.0, key="grid_losses", help=T("Si las indicas, también se calcula el factor por kWh consumido, que es mayor que el factor por kWh generado."))
 
     plants, problems = [], []
@@ -124,6 +126,14 @@ def render() -> None:
         return
 
     result = grid_factor(plants, losses / 100, pci_source)
+
+    with pci_box:
+        with_fuel = [p for p in plants if p.get("fuel_quantity")]
+        if with_fuel:
+            for p in with_fuel:
+                st.caption(f"{p['name']}: {pci_note(p['factor_id'], p['fuel_unit'], pci_source)}")
+        else:
+            st.caption(T("Ninguna fila tiene combustible quemado, así que el poder calorífico no se usa: todas calculan la energía con la eficiencia."))
 
     with right:
         st.subheader(T("Resultado"))
@@ -162,6 +172,11 @@ def render() -> None:
         width="stretch",
         hide_index=True,
     )
+
+    st.caption(T("Factores de emisión usados"))
+    for type_label, factor_id in types.items():
+        if factor_id != RENEWABLE and any(p["factor_id"] == factor_id for p in plants):
+            st.caption(f"· {type_label}: {ef_note(factor_id)}")
 
     st.subheader(T("Usar este factor"))
     name_col, button_col = st.columns([2, 1])

@@ -49,6 +49,6 @@ def test_biogenic_co2_is_left_out_of_total():
 
 def test_units_offered():
     assert units_for("1A3b_diesel_bus") == ["L", "kg", "t", "MJ", "TJ"]
-    assert units_for("1A1_gas_natural") == ["m3", "MJ", "TJ"]
+    assert units_for("1A1_gas_natural") == ["m3", "kg", "t", "MJ", "TJ"]
     with pytest.raises(ValueError):
         breakdown_from_quantity(1, "L", "1A1_gas_natural")

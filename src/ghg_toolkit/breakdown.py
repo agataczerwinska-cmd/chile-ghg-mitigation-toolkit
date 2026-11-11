@@ -21,11 +21,13 @@ def units_for(factor_id: str) -> list:
     props = load_fuel_properties().loc[get_factor(factor_id)["fuel"]]
     pci_units = {props["pci_bne_unit"], props["pci_ipcc_unit"]}
     units = []
+    if props["pci_bne_unit"] == "MJ/m3":
+        units.append("m3")  # gases: Chile reports them by volume
     if "MJ/kg" in pci_units:
         if props["density_unit"] == "kg/L":
             units.append("L")
         units += ["kg", "t"]
-    if "MJ/m3" in pci_units:
+    if "MJ/m3" in pci_units and "m3" not in units:
         units.append("m3")
     return units + ["MJ", "TJ"]
 

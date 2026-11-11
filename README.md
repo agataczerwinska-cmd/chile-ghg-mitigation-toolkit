@@ -25,7 +25,7 @@ ones Chile's national inventory (INGEI) uses.
 
 ## Visual calculator / Calculadora visual
 
-`app.py` is a point-and-click calculator in English and Spanish, with one
+`app.py` is a point-and-click calculator in English (default) and Spanish, with one
 page per emission source, grouped by inventory sector. Every result comes with the full calculation chain: each
 step, its value, its unit and its source.
 

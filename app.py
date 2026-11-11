@@ -1,4 +1,4 @@
-"""Calculadora de emisiones GEI · Chile / GHG Emissions Calculator · Chile.
+"""GHG Emissions Calculator · Chile / Calculadora de emisiones GEI · Chile.
 
 Run locally with:  streamlit run app.py
 """
@@ -15,8 +15,8 @@ from modes.i18n import LANGUAGES, T
 
 st.set_page_config(page_title="GHG Calculator · Chile", page_icon="🌎", layout="wide")
 st.session_state.setdefault("scenarios", {})
-# Widget values are dropped when a widget is not drawn; keep the language across pages.
-st.session_state["lang_choice"] = st.session_state.get("lang_choice") or "Español"
+# Keep the language across pages; English unless the visitor picks Spanish.
+st.session_state["lang_choice"] = st.session_state.get("lang_choice") or "English"
 
 pages = {
     T(section): [
@@ -27,9 +27,11 @@ pages = {
 }
 page = st.navigation(pages)
 
+_, language_column = st.columns([4, 1])
+with language_column:
+    st.segmented_control("Language / Idioma", list(LANGUAGES), key="lang_choice", selection_mode="single", label_visibility="collapsed")
+
 with st.sidebar:
-    st.segmented_control("Idioma / Language", list(LANGUAGES), key="lang_choice", selection_mode="single")
-    st.divider()
     st.caption(T("Próximamente"))
     for name in PLANNED:
         st.caption(f"· {T(name)}")

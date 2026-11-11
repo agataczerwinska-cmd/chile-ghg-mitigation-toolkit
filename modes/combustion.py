@@ -11,7 +11,7 @@ from ghg_toolkit import (
     units_for,
 )
 
-from .common import header, num_input, number, save_and_download, show_result_by_gas, show_steps
+from .common import ef_note, header, num_input, number, pci_note, save_and_download, show_result_by_gas, show_steps
 from .i18n import T, lang
 
 SECTORS = {
@@ -54,6 +54,7 @@ def render() -> None:
         )
         ef = options.loc[factor_id]
         props = fuels.loc[ef["fuel"]]
+        st.caption(ef_note(factor_id))
 
         st.subheader(T("2. ¿Cuánto?"))
         units = units_for(factor_id)
@@ -80,6 +81,7 @@ def render() -> None:
             horizontal=True,
             help=T("El curso usa los valores chilenos del Balance Nacional de Energía."),
         )
+        st.caption(pci_note(factor_id, unit, pci_source))
         overrides = {}
         if st.toggle(T("Usar factores propios (Nivel 2 o dato específico)"), help=T("Reemplaza cualquier valor por defecto por el de tu fuente: INGEI, una empresa, el enunciado de un ejercicio.")):
             key = f"{factor_id}_{pci_source}"

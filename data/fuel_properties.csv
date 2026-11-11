@@ -11,13 +11,13 @@ fuel_oil_5,Petróleo combustible 5,0.927,kg/L,10500,kcal/kg,0.95,41.76,MJ/kg,40.
 ifo_180,Petróleo combustible IFO 180,0.936,kg/L,10500,kcal/kg,0.95,41.76,MJ/kg,40.4,MJ/kg,77400,3,0.6,True,Navegación
 crudo_nacional,Petróleo crudo nacional,0.825,kg/L,10963,kcal/kg,0.95,43.61,MJ/kg,42.3,MJ/kg,73300,3,0.6,True,Refinería
 crudo_importado,Petróleo crudo importado,0.855,kg/L,10860,kcal/kg,0.95,43.2,MJ/kg,42.3,MJ/kg,73300,3,0.6,True,Refinería
-gas_natural,Gas natural (incluye GNL),,,9341,kcal/m3,0.9,35.2,MJ/m3,,,56100,1,0.1,True,"Generación, industria, residencial"
+gas_natural,Gas natural (incluye GNL),,,9341,kcal/m3,0.9,35.2,MJ/m3,48,MJ/kg,56100,1,0.1,True,"Generación, industria, residencial"
 carbon_bituminoso,Carbón bituminoso,,,7000,kcal/kg,0.95,27.84,MJ/kg,25.8,MJ/kg,94600,1,1.5,True,Termoeléctricas a carbón
 carbon_subbituminoso,Carbón subbituminoso,,,7000,kcal/kg,0.95,27.84,MJ/kg,18.9,MJ/kg,96100,1,1.5,True,Termoeléctricas a carbón
 coque_petroleo,Coque de petróleo,,,8100,kcal/kg,0.95,32.22,MJ/kg,32.5,MJ/kg,97500,3,0.6,True,"Hornos de cemento, generación"
 madera,Madera / biomasa,,,3500,kcal/kg,0.95,13.92,MJ/kg,15.6,MJ/kg,112000,30,4,False,"Celulosa, aserraderos, leña"
 licor_negro,Licor negro,,,,,,,,11.8,MJ/kg,95300,3,2,False,"Celulosa (Arauco, CMPC)"
-biogas,Biogás / gas de relleno,,,5600,kcal/m3,0.9,21.1,MJ/m3,,,54600,1,0.1,False,"Rellenos sanitarios, plantas de tratamiento"
+biogas,Biogás / gas de relleno,,,5600,kcal/m3,0.9,21.1,MJ/m3,50.4,MJ/kg,54600,1,0.1,False,"Rellenos sanitarios, plantas de tratamiento"
 residuos_municipales_fosil,Residuos municipales (fósil),,,,,,,,10,MJ/kg,91700,30,4,True,Incineración
 gas_refineria,Gas de refinería,,,,,,,,49.5,MJ/kg,57600,1,0.1,True,Refinación
 carbon_vegetal,Carbón vegetal,,,,,,,,29.5,MJ/kg,112000,200,1,False,Calefacción residencial

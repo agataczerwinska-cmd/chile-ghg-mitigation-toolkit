@@ -11,12 +11,12 @@ import re
 import pandas as pd
 import streamlit as st
 
-LANGUAGES = {"Español": "es", "English": "en"}
+LANGUAGES = {"English": "en", "Español": "es"}
 MISSING = set()  # Spanish strings without a translation; checked by the tests
 
 
 def lang() -> str:
-    return LANGUAGES.get(st.session_state.get("lang_choice", "Español"), "es")
+    return LANGUAGES.get(st.session_state.get("lang_choice") or "English", "en")
 
 
 UI = {
@@ -41,6 +41,17 @@ UI = {
     "No es un número válido. Se usa el valor por defecto:": "Not a valid number. Using the default value:",
     "Fuera del rango permitido. Se usa:": "Outside the allowed range. Using:",
     "Resultado": "Result",
+    "tablas": "tables",
+    "y": "and",
+    "cuadro": "table",
+    "Densidad": "Density",
+    "Chile, BNE": "Chile, BNE",
+    "Factores de emisión (kg/TJ)": "Emission factors (kg/TJ)",
+    "Poder calorífico: no se usa, porque la cantidad ya está en unidades de energía.": "Calorific value: not used, because the quantity is already in energy units.",
+    "La fuente elegida no tiene valor en esta unidad, así que se usa la otra.": "The chosen source has no value in this unit, so the other one is used.",
+    "Solo se usa en las filas donde escribes el combustible quemado. En las filas con eficiencia, la energía del combustible sale de generación ÷ eficiencia, así que el poder calorífico no cambia el resultado.": "Only used in rows where you enter the fuel burned. In rows with an efficiency, the fuel energy comes from generation ÷ efficiency, so the calorific value does not change the result.",
+    "Ninguna fila tiene combustible quemado, así que el poder calorífico no se usa: todas calculan la energía con la eficiencia.": "No row has fuel burned, so the calorific value is not used: every row calculates energy from the efficiency.",
+    "Factores de emisión usados": "Emission factors used",
     "CO2 (biogénico, no suma al total)": "CO2 (biogenic, not added to the total)",
     "Emisión (kg de gas)": "Emission (kg of gas)",
     "En CO2e (kg)": "As CO2e (kg)",

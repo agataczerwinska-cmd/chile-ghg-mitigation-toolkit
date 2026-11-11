@@ -16,7 +16,7 @@ from ghg_toolkit import (
 )
 
 from .combustion import SECTORS, UNIT_NAMES
-from .common import gas_table, grid_selector, header, num_input, number, precise, show_steps
+from .common import ef_note, gas_table, grid_selector, header, num_input, number, pci_note, precise, show_steps
 from .i18n import T, lang
 
 BY_ENERGY = "Mismo trabajo útil (eficiencias)"
@@ -42,6 +42,7 @@ def render() -> None:
             format_func=lambda i: f"{T(options.loc[i, 'example'])} · {T(fuels.loc[options.loc[i, 'fuel'], 'name'])}",
             key=f"el_equipment_{sector}_{lang()}",
         )
+        st.caption(ef_note(factor_id))
         units = units_for(factor_id)
         modes = [BY_ENERGY, BY_DISTANCE] if "L" in units else [BY_ENERGY]
         mode = st.radio(T("Comparar por"), modes, format_func=T, index=len(modes) - 1 if sector == "1A3b" else 0, key=f"el_mode_{sector}")
@@ -61,6 +62,7 @@ def render() -> None:
             unit = st.selectbox(T("Unidad"), units, format_func=lambda u: T(UNIT_NAMES[u]), key=f"el_unit_{factor_id}_{lang()}")
             quantity = num_input(f"{T('Combustible al año por equipo')} ({unit})", value=1500000.0, key="el_quantity")
             fuel_eff = num_input(T("Eficiencia del equipo a combustible (%)"), 1.0, 100.0, 35.0, key="el_eff_fuel", help=T("Parte de la energía del combustible que se convierte en trabajo o calor útil."))
+        st.caption(pci_note(factor_id, "L" if mode == BY_DISTANCE else unit, pci_source))
         n_units = num_input(T("Número de equipos o vehículos iguales"), 1.0, None, 1.0, key="el_units", help=T("La cantidad de arriba es por unidad; el resultado se multiplica por este número."))
 
         st.subheader(T("2. Equipo eléctrico"))
