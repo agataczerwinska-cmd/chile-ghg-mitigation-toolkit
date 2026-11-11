@@ -119,6 +119,9 @@ UI = {
     "El equipo eléctrico deja de convenir si el factor de la red supera": "The electric machine stops being better if the grid factor exceeds",
     "El total del combustible incluye CO2, CH4 y N2O. En el inventario nacional el equipo eléctrico se informa en generación eléctrica (1A1); en la huella de la empresa pasa de Alcance 1 a Alcance 2.": "The fuel total includes CO2, CH4 and N2O. In the national inventory the electric machine is reported under power generation (1A1); in the company's footprint it moves from Scope 1 to Scope 2.",
     "Guardar ambos para comparar": "Save both to compare",
+    "Equipo a combustible: emisiones por gas": "Fuel-burning machine: emissions by gas",
+    "El equipo eléctrico no se separa por gas: el factor de la red ya viene expresado en CO2e.": "The electric machine is not split by gas: the grid factor is already expressed in CO2e.",
+    "En el inventario nacional el equipo eléctrico se informa en generación eléctrica (1A1); en la huella de la empresa pasa de Alcance 1 a Alcance 2.": "In the national inventory the electric machine is reported under power generation (1A1); in the company's footprint it moves from Scope 1 to Scope 2.",
     "combustible": "fuel",
     "eléctrico": "electric",
     # grid factor

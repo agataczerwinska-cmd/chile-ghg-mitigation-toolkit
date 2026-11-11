@@ -16,7 +16,7 @@ from ghg_toolkit import (
 )
 
 from .combustion import SECTORS, UNIT_NAMES
-from .common import grid_selector, header, num_input, number, precise, show_steps
+from .common import gas_table, grid_selector, header, num_input, number, precise, show_steps
 from .i18n import T, lang
 
 BY_ENERGY = "Mismo trabajo útil (eficiencias)"
@@ -90,8 +90,12 @@ def render() -> None:
         c.metric(f"{T('Emisiones evitadas')} (t CO2e)", number(saved), delta=f"{number(-saved / fuel_t * 100) if fuel_t else '0'} %", delta_color="inverse")
         if kwh:
             st.caption(T("El equipo eléctrico deja de convenir si el factor de la red supera") + f" {precise(break_even_grid_factor(total_of(fuel_table), kwh))} kg CO2e/kWh.")
-        st.caption(T("El total del combustible incluye CO2, CH4 y N2O. En el inventario nacional el equipo eléctrico se informa en generación eléctrica (1A1); en la huella de la empresa pasa de Alcance 1 a Alcance 2."))
+        st.caption(T("En el inventario nacional el equipo eléctrico se informa en generación eléctrica (1A1); en la huella de la empresa pasa de Alcance 1 a Alcance 2."))
         st.bar_chart(pd.DataFrame({"t CO2e": {T("Equipo a combustible"): fuel_t, T("Equipo eléctrico"): electric_t}}), y_label="t CO2e", horizontal=True)
+
+        st.subheader(T("Equipo a combustible: emisiones por gas"))
+        gas_table(fuel_table, bool(options.loc[factor_id, "biogenic_co2"]))
+        st.caption(T("El equipo eléctrico no se separa por gas: el factor de la red ya viene expresado en CO2e."))
 
         st.markdown(f"**{T('Equipo eléctrico')}**")
         show_steps(electric_table)
