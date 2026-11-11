@@ -48,6 +48,7 @@ def render() -> None:
             "Equipo o vehículo",
             list(options.index),
             format_func=lambda i: f"{options.loc[i, 'example']} · {fuels.loc[options.loc[i, 'fuel'], 'name']} (Nivel {options.loc[i, 'tier']})",
+            key=f"equipment_{sector}",
         )
         ef = options.loc[factor_id]
         props = fuels.loc[ef["fuel"]]
@@ -64,8 +65,8 @@ def render() -> None:
             economy = st.number_input(f"Rendimiento ({economy_unit})", min_value=0.01, value=10.0, step=0.5)
             litres_per_100km = 100 / economy if economy_unit == "km/L" else economy
         else:
-            unit = st.selectbox("Unidad", units, format_func=UNIT_NAMES.get)
-            quantity = st.number_input(f"Cantidad ({unit})", min_value=0.0, value=1000.0, step=100.0)
+            unit = st.selectbox("Unidad", units, format_func=UNIT_NAMES.get, key=f"unit_{factor_id}")
+            quantity = st.number_input(f"Cantidad ({unit})", min_value=0.0, value=1000.0, step=100.0, key="quantity")
 
         st.subheader("3. Factores")
         pci_source = st.radio(
