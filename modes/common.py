@@ -86,6 +86,52 @@ def header(title: str, description: str) -> None:
         st.caption(T(description))
 
 
+def show_result_by_gas(table: pd.DataFrame, biogenic: bool = False) -> None:
+    """Result block: the total first, then one row per gas, in kg and in tonnes."""
+    steps = dict(zip(table["Paso"], table["Valor"]))
+    units = dict(zip(table["Unidad"], table["Valor"]))
+    total = units["kg CO2e"] if "TOTAL" not in steps else float(table[(table["Paso"] == "TOTAL") & (table["Unidad"] == "kg CO2e")]["Valor"].iloc[0])
+    co2 = units["kg CO2"]
+    gases = [
+        (T("CO2 (biogénico, no suma al total)") if biogenic else "CO2", co2, None if biogenic else co2),
+        ("CH4", units["kg CH4"], steps["CH4 en CO2e"]),
+        ("N2O", units["kg N2O"], steps["N2O en CO2e"]),
+    ]
+
+    st.subheader(T("Resultado"))
+    a, b = st.columns(2)
+    a.metric(T("Total"), f"{number(total)} kg CO2e")
+    b.metric(T("Total"), f"{number(total / 1000)} t CO2e")
+
+    dash = "–"
+    rows = [
+        {
+            "Gas": name,
+            T("Emisión (kg de gas)"): precise(kg),
+            T("En CO2e (kg)"): dash if co2e is None else precise(co2e),
+            T("En CO2e (t)"): dash if co2e is None else precise(co2e / 1000),
+            T("% del total"): dash if co2e is None or not total else _local(f"{co2e / total * 100:.1f}"),
+        }
+        for name, kg, co2e in gases
+    ]
+    rows.append(
+        {
+            "Gas": T("Total"),
+            T("Emisión (kg de gas)"): dash,
+            T("En CO2e (kg)"): precise(total),
+            T("En CO2e (t)"): precise(total / 1000),
+            T("% del total"): _local("100.0"),
+        }
+    )
+    frame = pd.DataFrame(rows)
+    st.dataframe(
+        frame,
+        width="stretch",
+        hide_index=True,
+        column_config={c: st.column_config.TextColumn(alignment="right") for c in frame.columns[1:]},
+    )
+
+
 def show_steps(table: pd.DataFrame) -> None:
     """Step-by-step table: value and unit in separate columns."""
     st.subheader(T("Paso a paso"))

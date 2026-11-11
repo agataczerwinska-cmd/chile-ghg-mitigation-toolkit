@@ -11,7 +11,7 @@ from ghg_toolkit import (
     units_for,
 )
 
-from .common import header, num_input, number, save_and_download, show_steps
+from .common import header, num_input, number, save_and_download, show_result_by_gas, show_steps
 from .i18n import T, lang
 
 SECTORS = {
@@ -105,15 +105,10 @@ def render() -> None:
         table = breakdown_from_quantity(quantity, unit, factor_id, pci_source, overrides=overrides)
         label = f"{T(ef['example'])}, {number(quantity)} {unit}"
 
-    by_unit = dict(zip(table["Unidad"], table["Valor"]))
     biogenic = bool(ef["biogenic_co2"])
 
     with right:
-        st.subheader(T("Resultado"))
-        a, b, c = st.columns(3)
-        a.metric(T("Total"), f"{number(total_of(table))} kg CO2e")
-        b.metric(T("Total"), f"{number(total_of(table, 't CO2e'))} t CO2e")
-        c.metric(T("CO2 biogénico (memo)" if biogenic else "Solo CO2"), f"{number(by_unit['kg CO2'])} kg")
+        show_result_by_gas(table, biogenic)
         if biogenic:
             st.info(T("El CO2 de la biomasa no suma al total del inventario: se informa aparte como partida informativa. Solo cuentan el CH4 y el N2O."))
         if overrides:
