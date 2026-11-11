@@ -297,6 +297,9 @@ DATA = {
     # grids
     "SEN Santiago": "SEN Santiago",
     "SEN (Chile)": "SEN (Chile)",
+    "Escenario: red 100% carbón": "Scenario: 100% coal grid",
+    "Escenario: 100% renovable (PPA)": "Scenario: 100% renewable (PPA)",
+    "Supuesto de modelación (ejercicio de clase)": "Modelling assumption (class exercise)",
 }
 
 # Phrases inside step-by-step tables (matched longest first, in one pass)
