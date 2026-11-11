@@ -4,13 +4,14 @@ To add a calculator: create a file here with a render() function, then add
 one line to SECTIONS below (and its English names to i18n.py).
 """
 
-from . import combustion, electricity, forestry, tools, waste
+from . import combustion, electricity, electrification, forestry, tools, waste
 
 # section -> [(page title, address, icon, function)]
 SECTIONS = {
     "Energía": [
         ("Combustibles", "fuels", ":material/local_gas_station:", combustion.render),
         ("Electricidad", "electricity", ":material/bolt:", electricity.render),
+        ("Electrificar un equipo", "electrify", ":material/ev_station:", electrification.render),
     ],
     "Residuos": [
         ("Rellenos sanitarios", "landfills", ":material/delete:", waste.render),

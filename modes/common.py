@@ -21,9 +21,10 @@ def number(value: float) -> str:
 
 
 def precise(value: float) -> str:
-    """Like number(), but keeps the digits needed to follow small values."""
+    """Like number(), with a third decimal when it is needed to follow the steps."""
     if value == 0 or abs(value) >= 1:
-        return _local(f"{value:,.2f}")
+        text = f"{value:,.3f}"
+        return _local(text[:-1] if text.endswith("0") else text)
     return _local(f"{value:.6g}")
 
 

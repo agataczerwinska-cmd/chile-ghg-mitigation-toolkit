@@ -55,3 +55,16 @@ def test_fod_capture_and_oxidation():
 
 def test_half_life():
     assert half_life_years(0.19) == pytest.approx(3.648, abs=0.001)
+
+
+def test_electric_haul_truck_matches_class_exercise():
+    from ghg_toolkit import break_even_grid_factor, breakdown_electric_replacement
+
+    # 54.18 TJ of diesel at 35% -> 18.963 TJ useful; at 85% -> 6197.06 MWh; x 0.25 -> 1549.26 t
+    table = breakdown_electric_replacement(54.18, 0.35, 0.85, 0.25)
+    values = dict(zip(zip(table["Paso"], table["Unidad"]), table["Valor"]))
+    assert values[("Energía útil", "TJ")] == pytest.approx(18.963)
+    assert values[("Pérdidas de calor", "TJ")] == pytest.approx(35.217)
+    assert values[("Electricidad necesaria", "MWh")] == pytest.approx(6197.06, abs=0.01)
+    assert total_of(table, "t CO2e") == pytest.approx(1549.26, abs=0.01)
+    assert break_even_grid_factor(4014738, 6197058.8) == pytest.approx(0.6478, abs=0.0001)
