@@ -4,7 +4,7 @@ import streamlit as st
 
 from ghg_toolkit import fod_series, half_life_years, load_waste_parameters
 
-from .common import header, number, save_and_download
+from .common import header, num_input, number, save_and_download
 from .i18n import T, T_table
 
 
@@ -27,7 +27,7 @@ def render() -> None:
         zone = st.radio(T("Macrozona"), ["k seco (Norte)", "k húmedo (Sur)"], format_func=lambda z: T("Norte (seca)" if "seco" in z else "Sur (húmeda)"), horizontal=True, index=1)
 
         st.subheader(T("2. ¿Cuánto y cuándo?"))
-        tonnes = st.number_input(T("Residuos depositados (t por año)"), min_value=0.0, value=1000.0, step=100.0)
+        tonnes = num_input(T("Residuos depositados (t por año)"), min_value=0.0, value=1000.0, step=100.0)
         first, last = st.slider(T("Años de depósito"), 1990, 2050, (2014, 2050))
         stop = st.checkbox(T("Dejar de depositar desde un año"), help=T("Sirve para ver la inercia: el relleno sigue emitiendo después de cerrar o de desviar el residuo."))
         stop_year = st.slider(T("Último año con depósito"), first, last, min(2030, last)) if stop else last
@@ -36,13 +36,13 @@ def render() -> None:
         key = f"{waste_type}_{site}_{zone}"
         k_default = _options(params, zone).get(waste_type, 0.05)
         with st.expander(T("Ver o cambiar (Nivel 2 o dato específico)")):
-            doc = st.number_input(T("DOC (fracción)"), 0.0, 1.0, doc_by_type[waste_type], format="%.3f", key=f"doc_{key}")
-            k = st.number_input(T("k (1/año)"), 0.001, 1.0, k_default, format="%.3f", key=f"k_{key}")
-            mcf = st.number_input(T("MCF (fracción)"), 0.0, 1.0, mcf_by_site[site], format="%.2f", key=f"mcf_{key}")
-            docf = st.number_input(T("DOCf (fracción)"), 0.0, 1.0, _options(params, "DOCf")["Por defecto"], format="%.2f")
-            f = st.number_input(T("F, fracción de CH4 en el biogás"), 0.0, 1.0, _options(params, "F")["Por defecto"], format="%.2f")
-            recovered = st.number_input(T("R, fracción de CH4 capturado"), 0.0, 1.0, 0.0, format="%.2f", help=T("Medida de mitigación: captura y quema o uso del biogás."))
-            ox = st.number_input(T("OX, oxidación en la cubierta"), 0.0, 1.0, _options(params, "OX")["Por defecto"], format="%.2f")
+            doc = num_input(T("DOC (fracción)"), 0.0, 1.0, doc_by_type[waste_type], format="%.3f", key=f"doc_{key}")
+            k = num_input(T("k (1/año)"), 0.001, 1.0, k_default, format="%.3f", key=f"k_{key}")
+            mcf = num_input(T("MCF (fracción)"), 0.0, 1.0, mcf_by_site[site], format="%.2f", key=f"mcf_{key}")
+            docf = num_input(T("DOCf (fracción)"), 0.0, 1.0, _options(params, "DOCf")["Por defecto"], format="%.2f")
+            f = num_input(T("F, fracción de CH4 en el biogás"), 0.0, 1.0, _options(params, "F")["Por defecto"], format="%.2f")
+            recovered = num_input(T("R, fracción de CH4 capturado"), 0.0, 1.0, 0.0, format="%.2f", help=T("Medida de mitigación: captura y quema o uso del biogás."))
+            ox = num_input(T("OX, oxidación en la cubierta"), 0.0, 1.0, _options(params, "OX")["Por defecto"], format="%.2f")
 
     deposits = {year: (tonnes if year <= stop_year else 0.0) for year in range(first, last + 1)}
     series = fod_series(deposits, doc=doc, k=k, mcf=mcf, docf=docf, f=f, recovered_fraction=recovered, ox=ox)

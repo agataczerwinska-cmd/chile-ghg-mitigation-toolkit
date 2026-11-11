@@ -9,7 +9,7 @@ from ghg_toolkit import (
     total_of,
 )
 
-from .common import header, number, save_and_download, show_steps
+from .common import header, num_input, number, save_and_download, show_steps
 from .i18n import T
 
 CASES = {
@@ -33,19 +33,19 @@ def render() -> None:
 
         st.subheader(T("2. ¿Cuánto?"))
         if CASES[case] == "growth":
-            area = st.number_input(T("Superficie (ha)"), min_value=0.0, value=100.0, step=10.0)
-            growth = st.number_input(T("Crecimiento anual (m3/ha/año)"), min_value=0.0, value=6.0, step=0.5, help=T("Incremento del volumen de madera. Usa el valor de tu fuente (INFOR, INGEI) para la especie y la región."))
+            area = num_input(T("Superficie (ha)"), min_value=0.0, value=100.0, step=10.0)
+            growth = num_input(T("Crecimiento anual (m3/ha/año)"), min_value=0.0, value=6.0, step=0.5, help=T("Incremento del volumen de madera. Usa el valor de tu fuente (INFOR, INGEI) para la especie y la región."))
         else:
-            volume = st.number_input(T("Volumen de madera (m3)"), min_value=0.0, value=1000.0, step=100.0)
+            volume = num_input(T("Volumen de madera (m3)"), min_value=0.0, value=1000.0, step=100.0)
 
         st.subheader(T("3. Factores"))
         overrides = {}
         with st.expander(T("Ver o cambiar (dato específico)")):
             values = {
-                "density": st.number_input(T("Densidad (t/m3)"), 0.0, 2.0, float(f["density_t_m3"]), format="%.2f", key=f"d_{species}"),
-                "feb": st.number_input(T("Factor de expansión de biomasa (FEB)"), 0.0, 5.0, float(f["feb"]), format="%.2f", key=f"feb_{species}"),
-                "root_ratio": st.number_input(T("Proporción de raíces (R)"), 0.0, 2.0, float(f["root_ratio"]), format="%.2f", key=f"r_{species}"),
-                "carbon_fraction": st.number_input(T("Fracción de carbono (FC)"), 0.0, 1.0, 0.5, format="%.2f"),
+                "density": num_input(T("Densidad (t/m3)"), 0.0, 2.0, float(f["density_t_m3"]), format="%.2f", key=f"d_{species}"),
+                "feb": num_input(T("Factor de expansión de biomasa (FEB)"), 0.0, 5.0, float(f["feb"]), format="%.2f", key=f"feb_{species}"),
+                "root_ratio": num_input(T("Proporción de raíces (R)"), 0.0, 2.0, float(f["root_ratio"]), format="%.2f", key=f"r_{species}"),
+                "carbon_fraction": num_input(T("Fracción de carbono (FC)"), 0.0, 1.0, 0.5, format="%.2f"),
             }
             defaults = {"density": f["density_t_m3"], "feb": f["feb"], "root_ratio": f["root_ratio"], "carbon_fraction": 0.5}
             overrides = {k: v for k, v in values.items() if v != float(defaults[k])}

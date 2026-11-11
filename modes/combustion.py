@@ -11,7 +11,7 @@ from ghg_toolkit import (
     units_for,
 )
 
-from .common import header, number, save_and_download, show_steps
+from .common import header, num_input, number, save_and_download, show_steps
 from .i18n import T, lang
 
 SECTORS = {
@@ -62,13 +62,13 @@ def render() -> None:
             by_distance = st.radio(T("Dato disponible"), ["Distancia recorrida", "Combustible consumido"], format_func=T, horizontal=True) == "Distancia recorrida"
         if by_distance:
             unit = "L"
-            km = st.number_input(T("Distancia (km)"), min_value=0.0, value=15000.0, step=1000.0)
+            km = num_input(T("Distancia (km)"), min_value=0.0, value=15000.0, step=1000.0)
             economy_unit = st.radio(T("Rendimiento en"), ["km/L", "L/100 km"], horizontal=True)
-            economy = st.number_input(f"{T('Rendimiento')} ({economy_unit})", min_value=0.01, value=10.0, step=0.5)
+            economy = num_input(f"{T('Rendimiento')} ({economy_unit})", min_value=0.01, value=10.0, step=0.5)
             litres_per_100km = 100 / economy if economy_unit == "km/L" else economy
         else:
             unit = st.selectbox(T("Unidad"), units, format_func=lambda u: T(UNIT_NAMES[u]), key=f"unit_{factor_id}_{lang()}")
-            quantity = st.number_input(f"{T('Cantidad')} ({unit})", min_value=0.0, value=1000.0, step=100.0, key="quantity")
+            quantity = num_input(f"{T('Cantidad')} ({unit})", min_value=0.0, value=1000.0, step=100.0, key="quantity")
 
         st.subheader(T("3. Factores"))
         pci_source = st.radio(
@@ -81,15 +81,15 @@ def render() -> None:
         overrides = {}
         if st.toggle(T("Usar factores propios (Nivel 2 o dato específico)"), help=T("Reemplaza cualquier valor por defecto por el de tu fuente: INGEI, una empresa, el enunciado de un ejercicio.")):
             key = f"{factor_id}_{pci_source}"
-            overrides["ef_co2"] = st.number_input("CO2 (kg/TJ)", min_value=0.0, value=float(ef["ef_co2_kg_tj"]), key=f"co2_{key}")
-            overrides["ef_ch4"] = st.number_input("CH4 (kg/TJ)", min_value=0.0, value=float(ef["ef_ch4_kg_tj"]), key=f"ch4_{key}")
-            overrides["ef_n2o"] = st.number_input("N2O (kg/TJ)", min_value=0.0, value=float(ef["ef_n2o_kg_tj"]), key=f"n2o_{key}")
+            overrides["ef_co2"] = num_input("CO2 (kg/TJ)", min_value=0.0, value=float(ef["ef_co2_kg_tj"]), key=f"co2_{key}")
+            overrides["ef_ch4"] = num_input("CH4 (kg/TJ)", min_value=0.0, value=float(ef["ef_ch4_kg_tj"]), key=f"ch4_{key}")
+            overrides["ef_n2o"] = num_input("N2O (kg/TJ)", min_value=0.0, value=float(ef["ef_n2o_kg_tj"]), key=f"n2o_{key}")
             if unit not in ("MJ", "TJ"):
                 wanted = "MJ/m3" if unit == "m3" else "MJ/kg"
                 source = pci_source if props[f"pci_{pci_source}_unit"] == wanted else ("ipcc" if pci_source == "bne" else "bne")
-                overrides["pci"] = st.number_input(f"{T('Poder calorífico inferior')} ({wanted})", min_value=0.0, value=float(props[f"pci_{source}"]), key=f"pci_{key}_{unit}")
+                overrides["pci"] = num_input(f"{T('Poder calorífico inferior')} ({wanted})", min_value=0.0, value=float(props[f"pci_{source}"]), key=f"pci_{key}_{unit}")
             if unit == "L":
-                overrides["density"] = st.number_input(T("Densidad (kg/L)"), min_value=0.0, value=float(props["density"]), key=f"dens_{key}")
+                overrides["density"] = num_input(T("Densidad (kg/L)"), min_value=0.0, value=float(props["density"]), key=f"dens_{key}")
             # keep only the values that really differ from the defaults
             defaults = {"ef_co2": ef["ef_co2_kg_tj"], "ef_ch4": ef["ef_ch4_kg_tj"], "ef_n2o": ef["ef_n2o_kg_tj"]}
             if "pci" in overrides:

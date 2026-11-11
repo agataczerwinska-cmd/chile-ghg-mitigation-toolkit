@@ -4,7 +4,7 @@ import streamlit as st
 
 from ghg_toolkit import breakdown_from_electricity, load_grid_factors, total_of
 
-from .common import header, number, save_and_download, show_steps
+from .common import header, num_input, number, save_and_download, show_steps
 from .i18n import T
 
 OWN = "Otro (escribir el factor)"
@@ -18,12 +18,12 @@ def render() -> None:
     with left:
         st.subheader(T("1. ¿Cuánta electricidad?"))
         unit = st.selectbox(T("Unidad"), ["kWh", "MWh", "GWh"])
-        quantity = st.number_input(f"{T('Consumo')} ({unit})", min_value=0.0, value=1000.0, step=100.0)
+        quantity = num_input(f"{T('Consumo')} ({unit})", min_value=0.0, value=1000.0, step=100.0)
 
         st.subheader(T("2. Factor de emisión de la red"))
         grid = st.selectbox(T("Red"), list(grids.index) + [OWN], format_func=T)
         if grid == OWN:
-            factor = st.number_input(T("Factor (kg CO2e/kWh)"), min_value=0.0, value=0.25, step=0.01, format="%.4f")
+            factor = num_input(T("Factor (kg CO2e/kWh)"), min_value=0.0, value=0.25, step=0.01, format="%.4f")
             source = "dato propio"
         else:
             factor = float(grids.loc[grid, "ef"])

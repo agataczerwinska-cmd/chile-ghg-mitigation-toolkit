@@ -38,6 +38,8 @@ UI = {
     "Proyectos de mitigación y análisis económico": "Mitigation projects and economic analysis",
     "Escenarios y proyección": "Scenarios and projections",
     "Directrices IPCC 2006 · Poderes caloríficos del Balance Nacional de Energía · Potenciales de calentamiento global del AR5": "IPCC 2006 Guidelines · Calorific values from Chile's National Energy Balance (BNE) · AR5 global warming potentials",
+    "No es un número válido. Se usa el valor por defecto:": "Not a valid number. Using the default value:",
+    "Fuera del rango permitido. Se usa:": "Outside the allowed range. Using:",
     "Resultado": "Result",
     "Total": "Total",
     "Paso a paso": "Step by step",
