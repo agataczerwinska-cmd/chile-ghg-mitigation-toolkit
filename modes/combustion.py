@@ -11,7 +11,8 @@ from ghg_toolkit import (
     units_for,
 )
 
-from .common import number, save_and_download, show_steps
+from .common import header, number, save_and_download, show_steps
+from .i18n import T, lang
 
 SECTORS = {
     "1A1": "Generación eléctrica y refinación",
@@ -37,57 +38,58 @@ UNIT_NAMES = {
 def render() -> None:
     factors = load_emission_factors()
     fuels = load_fuel_properties()
+    header("Combustibles", "Emisiones por quemar combustibles en centrales eléctricas, industria, minería, transporte, hogares y comercio.")
     left, right = st.columns([1, 2], gap="large")
 
     with left:
-        st.subheader("1. ¿Qué se quema?")
+        st.subheader(T("1. ¿Dónde se usa el combustible?"))
         sectors = [s for s in SECTORS if s in set(factors["ipcc_category"])]
-        sector = st.selectbox("Sector", sectors, format_func=lambda c: f"{SECTORS[c]} ({c})", index=sectors.index("1A3b"))
+        sector = st.selectbox(T("Sector"), sectors, format_func=lambda c: f"{T(SECTORS[c])} ({c})", index=sectors.index("1A3b"))
         options = factors[factors["ipcc_category"] == sector]
         factor_id = st.selectbox(
-            "Equipo o vehículo",
+            T("Equipo o vehículo"),
             list(options.index),
-            format_func=lambda i: f"{options.loc[i, 'example']} · {fuels.loc[options.loc[i, 'fuel'], 'name']} (Nivel {options.loc[i, 'tier']})",
-            key=f"equipment_{sector}",
+            format_func=lambda i: f"{T(options.loc[i, 'example'])} · {T(fuels.loc[options.loc[i, 'fuel'], 'name'])} ({T('Nivel')} {options.loc[i, 'tier']})",
+            key=f"equipment_{sector}_{lang()}",
         )
         ef = options.loc[factor_id]
         props = fuels.loc[ef["fuel"]]
 
-        st.subheader("2. ¿Cuánto?")
+        st.subheader(T("2. ¿Cuánto?"))
         units = units_for(factor_id)
         by_distance = False
         if sector == "1A3b" and "L" in units:
-            by_distance = st.radio("Dato disponible", ["Distancia recorrida", "Combustible consumido"], horizontal=True) == "Distancia recorrida"
+            by_distance = st.radio(T("Dato disponible"), ["Distancia recorrida", "Combustible consumido"], format_func=T, horizontal=True) == "Distancia recorrida"
         if by_distance:
             unit = "L"
-            km = st.number_input("Distancia (km)", min_value=0.0, value=15000.0, step=1000.0)
-            economy_unit = st.radio("Rendimiento en", ["km/L", "L/100 km"], horizontal=True)
-            economy = st.number_input(f"Rendimiento ({economy_unit})", min_value=0.01, value=10.0, step=0.5)
+            km = st.number_input(T("Distancia (km)"), min_value=0.0, value=15000.0, step=1000.0)
+            economy_unit = st.radio(T("Rendimiento en"), ["km/L", "L/100 km"], horizontal=True)
+            economy = st.number_input(f"{T('Rendimiento')} ({economy_unit})", min_value=0.01, value=10.0, step=0.5)
             litres_per_100km = 100 / economy if economy_unit == "km/L" else economy
         else:
-            unit = st.selectbox("Unidad", units, format_func=UNIT_NAMES.get, key=f"unit_{factor_id}")
-            quantity = st.number_input(f"Cantidad ({unit})", min_value=0.0, value=1000.0, step=100.0, key="quantity")
+            unit = st.selectbox(T("Unidad"), units, format_func=lambda u: T(UNIT_NAMES[u]), key=f"unit_{factor_id}_{lang()}")
+            quantity = st.number_input(f"{T('Cantidad')} ({unit})", min_value=0.0, value=1000.0, step=100.0, key="quantity")
 
-        st.subheader("3. Factores")
+        st.subheader(T("3. Factores"))
         pci_source = st.radio(
-            "Poder calorífico",
+            T("Poder calorífico"),
             ["bne", "ipcc"],
-            format_func={"bne": "Chile (BNE)", "ipcc": "IPCC por defecto"}.get,
+            format_func=lambda v: T({"bne": "Chile (BNE)", "ipcc": "IPCC por defecto"}[v]),
             horizontal=True,
-            help="El curso usa los valores chilenos del Balance Nacional de Energía.",
+            help=T("El curso usa los valores chilenos del Balance Nacional de Energía."),
         )
         overrides = {}
-        if st.toggle("Usar factores propios (Nivel 2 o dato específico)", help="Reemplaza cualquier valor por defecto por el de tu fuente: INGEI, una empresa, el enunciado de un ejercicio."):
+        if st.toggle(T("Usar factores propios (Nivel 2 o dato específico)"), help=T("Reemplaza cualquier valor por defecto por el de tu fuente: INGEI, una empresa, el enunciado de un ejercicio.")):
             key = f"{factor_id}_{pci_source}"
-            overrides["ef_co2"] = st.number_input("FE CO2 (kg/TJ)", min_value=0.0, value=float(ef["ef_co2_kg_tj"]), key=f"co2_{key}")
-            overrides["ef_ch4"] = st.number_input("FE CH4 (kg/TJ)", min_value=0.0, value=float(ef["ef_ch4_kg_tj"]), key=f"ch4_{key}")
-            overrides["ef_n2o"] = st.number_input("FE N2O (kg/TJ)", min_value=0.0, value=float(ef["ef_n2o_kg_tj"]), key=f"n2o_{key}")
+            overrides["ef_co2"] = st.number_input("CO2 (kg/TJ)", min_value=0.0, value=float(ef["ef_co2_kg_tj"]), key=f"co2_{key}")
+            overrides["ef_ch4"] = st.number_input("CH4 (kg/TJ)", min_value=0.0, value=float(ef["ef_ch4_kg_tj"]), key=f"ch4_{key}")
+            overrides["ef_n2o"] = st.number_input("N2O (kg/TJ)", min_value=0.0, value=float(ef["ef_n2o_kg_tj"]), key=f"n2o_{key}")
             if unit not in ("MJ", "TJ"):
                 wanted = "MJ/m3" if unit == "m3" else "MJ/kg"
                 source = pci_source if props[f"pci_{pci_source}_unit"] == wanted else ("ipcc" if pci_source == "bne" else "bne")
-                overrides["pci"] = st.number_input(f"Poder calorífico inferior ({wanted})", min_value=0.0, value=float(props[f"pci_{source}"]), key=f"pci_{key}_{unit}")
+                overrides["pci"] = st.number_input(f"{T('Poder calorífico inferior')} ({wanted})", min_value=0.0, value=float(props[f"pci_{source}"]), key=f"pci_{key}_{unit}")
             if unit == "L":
-                overrides["density"] = st.number_input("Densidad (kg/L)", min_value=0.0, value=float(props["density"]), key=f"dens_{key}")
+                overrides["density"] = st.number_input(T("Densidad (kg/L)"), min_value=0.0, value=float(props["density"]), key=f"dens_{key}")
             # keep only the values that really differ from the defaults
             defaults = {"ef_co2": ef["ef_co2_kg_tj"], "ef_ch4": ef["ef_ch4_kg_tj"], "ef_n2o": ef["ef_n2o_kg_tj"]}
             if "pci" in overrides:
@@ -98,23 +100,23 @@ def render() -> None:
 
     if by_distance:
         table = breakdown_from_distance(km, litres_per_100km, factor_id, pci_source, overrides)
-        label = f"{ef['example']}, {number(km)} km"
+        label = f"{T(ef['example'])}, {number(km)} km"
     else:
         table = breakdown_from_quantity(quantity, unit, factor_id, pci_source, overrides=overrides)
-        label = f"{ef['example']}, {number(quantity)} {unit}"
+        label = f"{T(ef['example'])}, {number(quantity)} {unit}"
 
     by_unit = dict(zip(table["Unidad"], table["Valor"]))
     biogenic = bool(ef["biogenic_co2"])
 
     with right:
-        st.subheader("Resultado")
+        st.subheader(T("Resultado"))
         a, b, c = st.columns(3)
-        a.metric("Total", f"{number(total_of(table))} kg CO2e")
-        b.metric("Total", f"{number(total_of(table, 't CO2e'))} t CO2e")
-        c.metric("CO2 biogénico (memo)" if biogenic else "Solo CO2", f"{number(by_unit['kg CO2'])} kg")
+        a.metric(T("Total"), f"{number(total_of(table))} kg CO2e")
+        b.metric(T("Total"), f"{number(total_of(table, 't CO2e'))} t CO2e")
+        c.metric(T("CO2 biogénico (memo)" if biogenic else "Solo CO2"), f"{number(by_unit['kg CO2'])} kg")
         if biogenic:
-            st.info("El CO2 de la biomasa no suma al total del inventario: se informa aparte como partida informativa. Solo cuentan el CH4 y el N2O.")
+            st.info(T("El CO2 de la biomasa no suma al total del inventario: se informa aparte como partida informativa. Solo cuentan el CH4 y el N2O."))
         if overrides:
-            st.warning("Cálculo con factores propios: " + ", ".join(sorted(overrides)) + ".")
+            st.warning(T("Cálculo con factores propios") + ": " + ", ".join(sorted(overrides)) + ".")
         show_steps(table)
         save_and_download(table, label, total_of(table), "combustion")

@@ -1,21 +1,32 @@
-"""Calculation modes of the visual calculator.
+"""Pages of the visual calculator, grouped by inventory sector.
 
-To add a mode: create a file here with a render() function, then add one
-line to MODES below. Nothing else needs to change.
+To add a calculator: create a file here with a render() function, then add
+one line to SECTIONS below (and its English names to i18n.py).
 """
 
-from . import combustion, electricity, forestry, waste
+from . import combustion, electricity, forestry, tools, waste
 
-MODES = {
-    "Combustión de combustibles": combustion,
-    "Electricidad de la red": electricity,
-    "Residuos: relleno sanitario": waste,
-    "Forestal (UTCUTS): biomasa a CO2": forestry,
+# section -> [(page title, address, icon, function)]
+SECTIONS = {
+    "Energía": [
+        ("Combustibles", "fuels", ":material/local_gas_station:", combustion.render),
+        ("Electricidad", "electricity", ":material/bolt:", electricity.render),
+    ],
+    "Residuos": [
+        ("Rellenos sanitarios", "landfills", ":material/delete:", waste.render),
+    ],
+    "Uso de la tierra": [
+        ("Bosques", "forests", ":material/forest:", forestry.render),
+    ],
+    "Herramientas": [
+        ("Comparar escenarios", "compare", ":material/compare_arrows:", tools.render_compare),
+        ("Factores y tablas", "tables", ":material/table:", tools.render_tables),
+    ],
 }
 
 PLANNED = [
     "Agropecuario",
     "Huella de carbono (organizacional, comunal, eventos)",
     "Proyectos de mitigación y análisis económico",
-    "Escenarios y proyección (taller)",
+    "Escenarios y proyección",
 ]

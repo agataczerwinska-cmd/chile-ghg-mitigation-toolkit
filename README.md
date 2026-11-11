@@ -25,11 +25,11 @@ ones Chile's national inventory (INGEI) uses.
 
 ## Visual calculator / Calculadora visual
 
-`app.py` is a point-and-click calculator with one calculation mode per
-emission source. Every result comes with the full calculation chain: each
+`app.py` is a point-and-click calculator in English and Spanish, with one
+page per emission source, grouped by inventory sector. Every result comes with the full calculation chain: each
 step, its value, its unit and its source.
 
-| Mode | Method | Status |
+| Calculator | Method | Status |
 |---|---|---|
 | Fuel combustion (power, industry and mining, transport, buildings) | IPCC 2006 Vol. 2, Tier 1, or your own factors (Tier 2) | Done |
 | Grid electricity | Consumption x grid factor | Done |
@@ -37,17 +37,17 @@ step, its value, its unit and its source.
 | Forest land: wood volume to CO2 (harvest, firewood, growth) | IPCC 2006 with Chilean national factors (Gayoso et al.) | Done |
 | Agriculture, carbon footprints, mitigation projects, scenarios | – | Planned |
 
-It also compares saved scenarios across modes and lets you edit every
-reference table, so country-specific (Tier 2) factors can be added as rows
-with their source.
+It also compares saved scenarios across sectors and shows every reference
+table. When run locally the tables are editable, so country-specific (Tier 2)
+factors can be added as rows with their source.
 
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Adding a mode takes one file in `modes/` with a `render()` function and one
-line in `modes/__init__.py`.
+Adding a calculator takes one file in `modes/` with a `render()` function,
+one line in `modes/__init__.py`, and its English labels in `modes/i18n.py`.
 
 ## Quick start (Python package)
 

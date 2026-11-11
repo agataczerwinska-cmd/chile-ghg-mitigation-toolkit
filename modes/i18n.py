@@ -1,0 +1,377 @@
+"""Spanish is the source language; this file holds the English translations.
+
+T(text)        exact translation of an interface label or a data label
+T_table(df)    translation of a step-by-step table (phrases inside cells)
+
+To add a string: write it in Spanish in the code and add its English version here.
+"""
+
+import re
+
+import pandas as pd
+import streamlit as st
+
+LANGUAGES = {"Español": "es", "English": "en"}
+MISSING = set()  # Spanish strings without a translation; checked by the tests
+
+
+def lang() -> str:
+    return LANGUAGES.get(st.session_state.get("lang_choice", "Español"), "es")
+
+
+UI = {
+    # navigation and shared
+    "Calculadora de emisiones GEI · Chile": "GHG Emissions Calculator · Chile",
+    "Energía": "Energy",
+    "Residuos": "Waste",
+    "Uso de la tierra": "Land use",
+    "Herramientas": "Tools",
+    "Combustibles": "Fuels",
+    "Electricidad": "Electricity",
+    "Rellenos sanitarios": "Landfills",
+    "Bosques": "Forests",
+    "Comparar escenarios": "Compare scenarios",
+    "Factores y tablas": "Factors and tables",
+    "Próximamente": "Coming soon",
+    "Agropecuario": "Agriculture",
+    "Huella de carbono (organizacional, comunal, eventos)": "Carbon footprint (organisations, municipalities, events)",
+    "Proyectos de mitigación y análisis económico": "Mitigation projects and economic analysis",
+    "Escenarios y proyección": "Scenarios and projections",
+    "Directrices IPCC 2006 · Poderes caloríficos del Balance Nacional de Energía · Potenciales de calentamiento global del AR5": "IPCC 2006 Guidelines · Calorific values from Chile's National Energy Balance (BNE) · AR5 global warming potentials",
+    "Resultado": "Result",
+    "Total": "Total",
+    "Paso a paso": "Step by step",
+    "Nombre del escenario": "Scenario name",
+    "Guardar para comparar": "Save to compare",
+    "Guardado": "Saved",
+    "Descargar tabla (CSV para Excel)": "Download table (CSV for Excel)",
+    "Unidad": "Unit",
+    "Nivel": "Tier",
+    # fuels
+    "Emisiones por quemar combustibles en centrales eléctricas, industria, minería, transporte, hogares y comercio.": "Emissions from burning fuels in power plants, industry, mining, transport, homes and commerce.",
+    "1. ¿Dónde se usa el combustible?": "1. Where is the fuel used?",
+    "Sector": "Sector",
+    "Equipo o vehículo": "Equipment or vehicle",
+    "2. ¿Cuánto?": "2. How much?",
+    "Dato disponible": "Available data",
+    "Distancia recorrida": "Distance driven",
+    "Combustible consumido": "Fuel consumed",
+    "Distancia (km)": "Distance (km)",
+    "Rendimiento en": "Fuel economy in",
+    "Rendimiento": "Fuel economy",
+    "Cantidad": "Quantity",
+    "3. Factores": "3. Factors",
+    "Poder calorífico": "Calorific value",
+    "Chile (BNE)": "Chile (BNE)",
+    "IPCC por defecto": "IPCC default",
+    "El curso usa los valores chilenos del Balance Nacional de Energía.": "Chilean values from the National Energy Balance (BNE), or IPCC world defaults.",
+    "Usar factores propios (Nivel 2 o dato específico)": "Use my own factors (Tier 2 or specific data)",
+    "Reemplaza cualquier valor por defecto por el de tu fuente: INGEI, una empresa, el enunciado de un ejercicio.": "Replace any default with the value from your source: the national inventory, a company, an exercise.",
+    "Poder calorífico inferior": "Net calorific value",
+    "Densidad (kg/L)": "Density (kg/L)",
+    "Solo CO2": "CO2 only",
+    "CO2 biogénico (memo)": "Biogenic CO2 (memo)",
+    "El CO2 de la biomasa no suma al total del inventario: se informa aparte como partida informativa. Solo cuentan el CH4 y el N2O.": "CO2 from biomass is not added to the inventory total: it is reported separately as a memo item. Only CH4 and N2O count.",
+    "Cálculo con factores propios": "Calculated with own factors",
+    "Litros (L)": "Litres (L)",
+    "Kilogramos (kg)": "Kilograms (kg)",
+    "Toneladas (t)": "Tonnes (t)",
+    "Metros cúbicos (m3)": "Cubic metres (m3)",
+    "Megajoules (MJ)": "Megajoules (MJ)",
+    "Terajoules (TJ)": "Terajoules (TJ)",
+    "Generación eléctrica y refinación": "Power generation and refining",
+    "Industria y minería": "Industry and mining",
+    "Aviación": "Aviation",
+    "Transporte terrestre": "Road transport",
+    "Ferrocarriles": "Railways",
+    "Navegación": "Shipping",
+    "Comercial e institucional": "Commercial and institutional",
+    "Residencial": "Residential",
+    "Agricultura y pesca": "Agriculture and fishing",
+    # electricity
+    "Emisiones de la electricidad comprada a la red: consumo × factor de emisión.": "Emissions from electricity bought from the grid: consumption × emission factor.",
+    "1. ¿Cuánta electricidad?": "1. How much electricity?",
+    "Consumo": "Consumption",
+    "2. Factor de emisión de la red": "2. Grid emission factor",
+    "Red": "Grid",
+    "Otro (escribir el factor)": "Other (enter the factor)",
+    "Factor (kg CO2e/kWh)": "Factor (kg CO2e/kWh)",
+    "En el inventario nacional estas emisiones se informan en generación eléctrica (1A1). En una huella corporativa son Alcance 2.": "In the national inventory these emissions are reported under power generation (1A1). In a corporate footprint they are Scope 2.",
+    # landfills
+    "Metano de los residuos enterrados, año a año, con el modelo de descomposición de primer orden del IPCC.": "Methane from buried waste, year by year, with the IPCC First Order Decay model.",
+    "1. ¿Qué residuo y dónde?": "1. Which waste and where?",
+    "Tipo de residuo": "Waste type",
+    "Sitio de disposición": "Disposal site",
+    "Macrozona": "Climate zone",
+    "Norte (seca)": "North (dry)",
+    "Sur (húmeda)": "South (wet)",
+    "2. ¿Cuánto y cuándo?": "2. How much and when?",
+    "Residuos depositados (t por año)": "Waste deposited (t per year)",
+    "Años de depósito": "Years of disposal",
+    "Dejar de depositar desde un año": "Stop depositing from a given year",
+    "Sirve para ver la inercia: el relleno sigue emitiendo después de cerrar o de desviar el residuo.": "Shows the inertia: the landfill keeps emitting after it closes or the waste is diverted.",
+    "Último año con depósito": "Last year with disposal",
+    "3. Parámetros": "3. Parameters",
+    "Ver o cambiar (Nivel 2 o dato específico)": "View or change (Tier 2 or specific data)",
+    "DOC (fracción)": "DOC (fraction)",
+    "k (1/año)": "k (1/year)",
+    "MCF (fracción)": "MCF (fraction)",
+    "DOCf (fracción)": "DOCf (fraction)",
+    "F, fracción de CH4 en el biogás": "F, fraction of CH4 in landfill gas",
+    "R, fracción de CH4 capturado": "R, fraction of CH4 captured",
+    "Medida de mitigación: captura y quema o uso del biogás.": "Mitigation measure: capturing and flaring or using the landfill gas.",
+    "OX, oxidación en la cubierta": "OX, oxidation in the cover",
+    "Emisiones en": "Emissions in",
+    "Acumulado": "Cumulative",
+    "Vida media del residuo": "Waste half-life",
+    "años": "years",
+    "t CO2e por año": "t CO2e per year",
+    "Año": "Year",
+    "Lo depositado en un año empieza a emitir al año siguiente. Parámetros:": "Waste deposited in one year starts emitting the following year. Parameters:",
+    "Año a año": "Year by year",
+    "t/año": "t/year",
+    # forests
+    "Captura y emisión de CO2 de los bosques a partir del volumen de madera, con factores nacionales de Chile.": "CO2 removals and emissions from forests based on wood volume, with Chilean national factors.",
+    "1. ¿Qué flujo del bosque?": "1. Which forest flow?",
+    "Caso": "Case",
+    "Crecimiento de bosque nativo o plantación (captura)": "Growth of native forest or plantation (removal)",
+    "Cosecha o raleo (emisión)": "Harvest or thinning (emission)",
+    "Consumo de leña (emisión)": "Firewood use (emission)",
+    "Incendio: biomasa quemada (emisión de CO2)": "Fire: biomass burned (CO2 emission)",
+    "Especie": "Species",
+    "Superficie (ha)": "Area (ha)",
+    "Crecimiento anual (m3/ha/año)": "Annual growth (m3/ha/year)",
+    "Incremento del volumen de madera. Usa el valor de tu fuente (INFOR, INGEI) para la especie y la región.": "Increase in wood volume. Use the value from your source (INFOR, national inventory) for the species and region.",
+    "Volumen de madera (m3)": "Wood volume (m3)",
+    "Ver o cambiar (dato específico)": "View or change (specific data)",
+    "Densidad (t/m3)": "Density (t/m3)",
+    "Factor de expansión de biomasa (FEB)": "Biomass expansion factor (BEF)",
+    "Proporción de raíces (R)": "Root-to-shoot ratio (R)",
+    "Fracción de carbono (FC)": "Carbon fraction (CF)",
+    "Captura": "Removal",
+    "Captura (por año)": "Removal (per year)",
+    "Emisión": "Emission",
+    "En el balance": "In the balance",
+    "Las capturas van con signo negativo.": "Removals carry a negative sign.",
+    "CO2 = V × D × FEB × (1 + R) × FC × 44/12. Factores nacionales del INGEI (Gayoso et al., 2002) y fracción de carbono del IPCC 2006.": "CO2 = V × D × BEF × (1 + R) × CF × 44/12. National factors from Chile's inventory (Gayoso et al., 2002) and IPCC 2006 carbon fraction.",
+    "Nota": "Note",
+    "Solo se calcula el CO2 de la biomasa. Un incendio emite además CH4 y N2O, que esta herramienta todavía no incluye.": "Only the CO2 from biomass is calculated. A fire also emits CH4 and N2O, which this tool does not include yet.",
+    # tools
+    "Todavía no hay escenarios. En cualquier calculadora, pulsa «Guardar para comparar» en cada caso que quieras comparar. Puedes mezclar sectores: por ejemplo, un bus diésel y la electricidad de un bus eléctrico.": "No scenarios yet. In any calculator, click 'Save to compare' for each case you want to compare. You can mix sectors: for example, a diesel bus and the electricity of an electric bus.",
+    "Total (kg CO2e)": "Total (kg CO2e)",
+    "Total (t CO2e)": "Total (t CO2e)",
+    "Diferencia vs el primero (%)": "Difference vs the first (%)",
+    "Borrar escenarios": "Clear scenarios",
+    "Tabla": "Table",
+    "Factores de emisión por categoría": "Emission factors by category",
+    "Combustibles: densidad y poder calorífico": "Fuels: density and calorific value",
+    "Potenciales de calentamiento global (AR5)": "Global warming potentials (AR5)",
+    "Conversiones de unidades": "Unit conversions",
+    "Factores de la red eléctrica": "Grid emission factors",
+    "Residuos: DOC, k, MCF": "Waste: DOC, k, MCF",
+    "Forestal: densidad, FEB y raíces": "Forests: density, BEF and root ratio",
+    "Densidad de la leña por especie": "Firewood density by species",
+    "Archivo": "File",
+    "Puedes cambiar valores, o agregar filas al final (por ejemplo, un factor chileno de Nivel 2 con su fuente). Los cálculos usan la tabla guardada.": "You can change values, or add rows at the end (for example, a Chilean Tier 2 factor with its source). Calculations use the saved table.",
+    "Tablas de solo lectura en la versión en línea. Los datos están en español, tal como en sus fuentes.": "Tables are read-only in the online version. The data is in Spanish, as in its sources.",
+    "Guardar cambios": "Save changes",
+    "Guardado en": "Saved to",
+}
+
+# Labels that come from the CSV files in /data
+DATA = {
+    # equipment and vehicles
+    "Central a carbón": "Coal power plant",
+    "Ciclo combinado o turbina": "Combined cycle or turbine",
+    "Respaldo": "Backup generator",
+    "Central a fuel oil": "Fuel oil power plant",
+    "Central a coque": "Petroleum coke power plant",
+    "Biomasa / cogeneración": "Biomass / cogeneration",
+    "Biogás de relleno": "Landfill gas",
+    "Hornos de refinería": "Refinery furnaces",
+    "Caldera": "Boiler",
+    "Caldera u horno": "Boiler or furnace",
+    "Caldera (p. ej. SX-EW)": "Boiler (e.g. SX-EW)",
+    "Horno de cemento o cal": "Cement or lime kiln",
+    "Horno de cemento": "Cement kiln",
+    "Caldera de celulosa": "Pulp mill boiler",
+    "Caldera de biomasa": "Biomass boiler",
+    "CAEX, palas, construcción": "Haul trucks, shovels, construction",
+    "Avión comercial": "Commercial aircraft",
+    "Auto gasolina sin control": "Petrol car, uncontrolled",
+    "Auto gasolina con catalizador de oxidación": "Petrol car, oxidation catalyst",
+    "Auto gasolina moderno (1995 o posterior)": "Modern petrol car (1995 or later)",
+    "Auto o camioneta diésel": "Diesel car or pickup",
+    "Bus diésel": "Diesel bus",
+    "Camión / tractocamión": "Truck / articulated truck",
+    "Vehículo a GLP": "LPG vehicle",
+    "Vehículo a GNC": "CNG vehicle",
+    "Locomotora diésel": "Diesel locomotive",
+    "Barco de cabotaje": "Coastal vessel",
+    "Caldera de hospital u oficina": "Hospital or office boiler",
+    "Caldera de colegio": "School boiler",
+    "Restaurante": "Restaurant",
+    "Cocina o calefón": "Stove or water heater",
+    "Cocina o caldera": "Stove or boiler",
+    "Estufa a parafina": "Kerosene heater",
+    "Estufa a leña": "Wood stove",
+    "Brasero": "Charcoal brazier",
+    "Calefactor de invernadero": "Greenhouse heater",
+    "Tractor o cosechadora": "Tractor or harvester",
+    "Barco pesquero": "Fishing vessel",
+    # fuels
+    "Diésel": "Diesel",
+    "Gasolina motor": "Motor gasoline",
+    "GLP": "LPG",
+    "Kerosene de aviación (jet)": "Jet kerosene",
+    "Kerosene (otro queroseno)": "Other kerosene",
+    "Gasolina de aviación": "Aviation gasoline",
+    "Nafta": "Naphtha",
+    "Petróleo combustible 6": "Fuel oil no. 6",
+    "Petróleo combustible 5": "Fuel oil no. 5",
+    "Petróleo combustible IFO 180": "IFO 180 fuel oil",
+    "Petróleo crudo nacional": "Domestic crude oil",
+    "Petróleo crudo importado": "Imported crude oil",
+    "Gas natural (incluye GNL)": "Natural gas (incl. LNG)",
+    "Carbón bituminoso": "Bituminous coal",
+    "Carbón subbituminoso": "Sub-bituminous coal",
+    "Coque de petróleo": "Petroleum coke",
+    "Madera / biomasa": "Wood / biomass",
+    "Licor negro": "Black liquor",
+    "Biogás / gas de relleno": "Biogas / landfill gas",
+    "Residuos municipales (fósil)": "Municipal waste (fossil)",
+    "Gas de refinería": "Refinery gas",
+    "Carbón vegetal": "Charcoal",
+    # waste
+    "Alimentos": "Food waste",
+    "Papel y cartón": "Paper and cardboard",
+    "Textiles": "Textiles",
+    "Madera": "Wood",
+    "Jardines y parques": "Garden and park waste",
+    "Pañales": "Nappies",
+    "Lodos": "Sludge",
+    "Relleno sanitario anaeróbico": "Anaerobic sanitary landfill",
+    "Vertedero": "Controlled dump",
+    "Basural": "Open dump",
+    "Gestionado semiaeróbico": "Managed, semi-aerobic",
+    "No gestionado profundo (>5 m)": "Unmanaged, deep (>5 m)",
+    "No gestionado poco profundo (<5 m)": "Unmanaged, shallow (<5 m)",
+    "No categorizado": "Uncategorised",
+    # forests
+    "Especies nativas": "Native species",
+    "Pino insigne (Pinus radiata)": "Radiata pine (Pinus radiata)",
+    "Eucalyptus globulus": "Eucalyptus globulus",
+    "Eucalyptus nitens": "Eucalyptus nitens",
+    "Pino oregón (Pseudotsuga menziesii)": "Douglas fir (Pseudotsuga menziesii)",
+    "Álamo (Populus spp.)": "Poplar (Populus spp.)",
+    "Atriplex (Atriplex spp.)": "Saltbush (Atriplex spp.)",
+    "Algarrobo y tamarugo (Prosopis spp.)": "Algarrobo and tamarugo (Prosopis spp.)",
+    "Otras especies": "Other species",
+    "FEB y raíces de Eucalyptus spp.": "BEF and root ratio from Eucalyptus spp.",
+    "FEB y raíces de «Otras especies»": "BEF and root ratio from 'Other species'",
+    # grids
+    "SEN Santiago": "SEN Santiago",
+    "SEN (Chile)": "SEN (Chile)",
+}
+
+# Phrases inside step-by-step tables (matched longest first, in one pass)
+PHRASES = {
+    "Paso": "Step",
+    "Valor": "Value",
+    "Unidad": "Unit",
+    "Cálculo / fuente": "Calculation / source",
+    "Distancia recorrida": "Distance driven",
+    "Rendimiento": "Fuel economy",
+    "Combustible consumido": "Fuel consumed",
+    "Densidad": "Density",
+    "densidad": "density",
+    "Masa de combustible": "Fuel mass",
+    "Poder calorífico inferior": "Net calorific value",
+    "Energía": "Energy",
+    "Factor de emisión de la red": "Grid emission factor",
+    "factor de la red": "grid factor",
+    "Factor de emisión": "Emission factor",
+    "Emisiones": "Emissions",
+    "(biogénico, memo)": "(biogenic, memo)",
+    " en CO2e": " as CO2e",
+    "dato propio (Nivel 2)": "own value (Tier 2)",
+    "dato propio": "own value",
+    "dato": "input",
+    "tabla de combustibles": "fuel table",
+    "tabla": "table",
+    "PCI Chile (BNE)": "NCV Chile (BNE)",
+    "PCI por defecto IPCC 2006": "IPCC 2006 default NCV",
+    "PCI": "NCV",
+    "1.000.000": "1,000,000",
+    "FE CO2": "EF CO2",
+    "FE CH4": "EF CH4",
+    "FE N2O": "EF N2O",
+    "PCG": "GWP",
+    "Electricidad consumida": "Electricity used",
+    "Volumen de madera": "Wood volume",
+    "Biomasa del fuste": "Stem biomass",
+    "biomasa del fuste": "stem biomass",
+    "Factor de expansión de biomasa (FEB)": "Biomass expansion factor (BEF)",
+    "FEB": "BEF",
+    "Biomasa aérea": "Above-ground biomass",
+    "biomasa aérea": "above-ground biomass",
+    "Proporción de raíces (R)": "Root-to-shoot ratio (R)",
+    "Biomasa total (aérea + raíces)": "Total biomass (above-ground + roots)",
+    "biomasa total": "total biomass",
+    "Fracción de carbono (FC)": "Carbon fraction (CF)",
+    "× FC": "× CF",
+    "Carbono": "Carbon",
+    "Conversión de C a CO2": "C to CO2 conversion",
+    "CO2 capturado": "CO2 removed",
+    "CO2 emitido": "CO2 emitted",
+    "materia seca": "dry matter",
+    "3,667": "3.667",
+    "captura: signo negativo": "removal: negative sign",
+    "emisión": "emission",
+    "Superficie": "Area",
+    "Crecimiento anual": "Annual growth",
+    "Volumen que crece en un año": "Volume grown in one year",
+    "/año": "/year",
+    "Año": "Year",
+    "Residuos depositados": "Waste deposited",
+    "depositado": "deposited",
+    "acumulado": "accumulated",
+    "descompuesto": "decomposed",
+    "generado": "generated",
+    "recuperado": "recovered",
+    "emitido": "emitted",
+}
+_PHRASE_KEYS = {**DATA, **PHRASES}
+_PATTERN = re.compile("|".join(re.escape(k) for k in sorted(_PHRASE_KEYS, key=len, reverse=True)))
+
+
+def T(text: str) -> str:
+    """Translate one label; Spanish is returned unchanged in Spanish mode."""
+    if lang() == "es" or not isinstance(text, str):
+        return text
+    if text in UI:
+        return UI[text]
+    if text in DATA:
+        return DATA[text]
+    MISSING.add(text)
+    return text
+
+
+def phrases(text: str) -> str:
+    """Translate the Spanish phrases inside a longer text."""
+    if lang() == "es" or not isinstance(text, str):
+        return text
+    return _PATTERN.sub(lambda m: _PHRASE_KEYS[m.group(0)], text)
+
+
+def T_table(table: pd.DataFrame) -> pd.DataFrame:
+    """Translate the headers and text cells of a step-by-step table."""
+    if lang() == "es":
+        return table
+    out = table.copy()
+    for column in out.columns:
+        if not pd.api.types.is_numeric_dtype(out[column]):
+            out[column] = out[column].map(phrases)
+    out.columns = [phrases(c) for c in out.columns]
+    out.index.name = phrases(out.index.name) if out.index.name else None
+    return out
