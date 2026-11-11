@@ -13,7 +13,7 @@ import streamlit as st
 from modes import PLANNED, SECTIONS
 from modes.i18n import LANGUAGES, T
 
-st.set_page_config(page_title="GHG Calculator · Chile", page_icon="🌎", layout="wide")
+st.set_page_config(page_title="GHG Calculator · Chile (beta)", page_icon="🌎", layout="wide")
 st.session_state.setdefault("scenarios", {})
 # Keep the language across pages; English unless the visitor picks Spanish.
 st.session_state["lang_choice"] = st.session_state.get("lang_choice") or "English"
@@ -39,5 +39,8 @@ with st.sidebar:
         st.caption(f"· {T(name)}")
     st.divider()
     st.caption(T("Directrices IPCC 2006 · Poderes caloríficos del Balance Nacional de Energía · Potenciales de calentamiento global del AR5"))
+
+st.badge(T("Beta · en desarrollo"), icon=":material/science:", color="orange")
+st.caption(T("Herramienta de aprendizaje creada durante un curso. Revisa los resultados con fuentes oficiales antes de usarlos en un informe."))
 
 page.run()

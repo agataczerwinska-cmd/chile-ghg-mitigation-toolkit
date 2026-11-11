@@ -33,6 +33,8 @@ UI = {
     "Comparar escenarios": "Compare scenarios",
     "Factores y tablas": "Factors and tables",
     "Próximamente": "Coming soon",
+    "Beta · en desarrollo": "Beta · in development",
+    "Herramienta de aprendizaje creada durante un curso. Revisa los resultados con fuentes oficiales antes de usarlos en un informe.": "Learning tool built during a course. Check the results against official sources before using them in a report.",
     "Agropecuario": "Agriculture",
     "Huella de carbono (organizacional, comunal, eventos)": "Carbon footprint (organisations, municipalities, events)",
     "Huella de carbono comunal y de eventos": "Municipal and event carbon footprints",

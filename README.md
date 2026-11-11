@@ -2,6 +2,8 @@
 
 **Live calculator / Calculadora en línea: https://chile-ghg-calculator.streamlit.app/**
 
+**Status: beta.** A learning project, still in development. Check results against official sources before using them in a report. / **Estado: beta.** Proyecto de aprendizaje en desarrollo; revisa los resultados con fuentes oficiales antes de usarlos en un informe.
+
 Small Python toolkit for greenhouse gas emission calculations and mitigation
 scenarios, built while taking the course *Mitigación y Modelación de Políticas
 Climáticas* (Diploma Cambio Climático y Desarrollo Resiliente, Universidad de
