@@ -25,13 +25,15 @@ pages = {
     ]
     for section, entries in SECTIONS.items()
 }
-page = st.navigation(pages)
-
-language_column, _ = st.columns([1, 4])
-with language_column:
-    st.segmented_control("Language / Idioma", list(LANGUAGES), key="lang_choice", selection_mode="single", label_visibility="collapsed")
+page = st.navigation(pages, position="hidden")
 
 with st.sidebar:
+    st.segmented_control("Language / Idioma", list(LANGUAGES), key="lang_choice", selection_mode="single", label_visibility="collapsed")
+    for section, section_pages in pages.items():
+        st.caption(section)
+        for p in section_pages:
+            st.page_link(p, label=p.title, icon=p.icon)
+    st.divider()
     st.caption(T("Próximamente"))
     for name in PLANNED:
         st.caption(f"· {T(name)}")
