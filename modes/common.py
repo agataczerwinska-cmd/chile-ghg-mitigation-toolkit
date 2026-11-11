@@ -14,14 +14,16 @@ def _local(text: str) -> str:
 
 
 def number(value: float) -> str:
-    decimals = 0 if abs(value) >= 1000 else 2 if abs(value) >= 1 else 4
-    return _local(f"{value:,.{decimals}f}")
+    """Always two decimals from 1 upwards, so 3.467,05 can never be mistaken for 3,47."""
+    if value == 0 or abs(value) >= 1:
+        return _local(f"{value:,.2f}")
+    return _local(f"{value:.4f}")
 
 
 def precise(value: float) -> str:
-    """Like number(), but keeps the decimals needed to follow the calculation."""
+    """Like number(), but keeps the digits needed to follow small values."""
     if value == 0 or abs(value) >= 1:
-        return _local(f"{value:,.2f}".rstrip("0").rstrip("."))
+        return _local(f"{value:,.2f}")
     return _local(f"{value:.6g}")
 
 
