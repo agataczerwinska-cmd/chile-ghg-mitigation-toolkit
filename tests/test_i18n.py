@@ -75,7 +75,6 @@ def test_every_data_label_has_a_translation():
         + list(load_grid_factors().index)
         + list(params[params["parameter"].isin(["DOC", "MCF"])]["item"])
         + ["Central a carbón", "Ciclo combinado", "Parque solar", "Parque eólico"]
-        + list(__import__("ghg_toolkit").CATEGORIES)
         + list(__import__("ghg_toolkit").load_forest_growth()["type"].unique())
         + PLANNED
         + list(SECTIONS)

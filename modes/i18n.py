@@ -37,7 +37,7 @@ UI = {
     "Herramienta de aprendizaje creada durante un curso. Revisa los resultados con fuentes oficiales antes de usarlos en un informe.": "Learning tool built during a course. Check the results against official sources before using them in a report.",
     "Agropecuario": "Agriculture",
     "Huella de carbono (organizacional, comunal, eventos)": "Carbon footprint (organisations, municipalities, events)",
-    "Huella de carbono comunal y de eventos": "Municipal and event carbon footprints",
+    "Proyectos de mitigación: reducciones y análisis económico": "Mitigation projects: emission reductions and economic analysis",
     "Huella de carbono": "Carbon footprint",
     "Huella organizacional": "Organisational footprint",
     "Inventario de emisiones de una organización por alcances, con la estructura del informe del programa HuellaChile (NCh-ISO 14064-1).": "Emissions inventory of an organisation by scope, following the report structure of Chile's HuellaChile programme (NCh-ISO 14064-1).",

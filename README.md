@@ -39,8 +39,7 @@ step, its value, its unit and its source.
 | Grid emission factor of a country, region or generating company, built plant by plant | Emissions of all plants / electricity generated, with optional losses | Done |
 | Landfill methane | IPCC 2006 Vol. 5, First Order Decay | Done |
 | Forest land: wood volume to CO2 (harvest, firewood, fire, growth) | IPCC 2006 with Chilean national factors (Gayoso et al.) and inventory growth tables (INGEI 2024) | Done |
-| Organisational carbon footprint by scope (HuellaChile report structure, NCh-ISO 14064-1) | Activity data x emission factor; fuels, grid electricity, refrigerants, own factors | Done |
-| Agriculture, municipal and event footprints, mitigation projects, scenarios | – | Planned |
+| Agriculture, mitigation projects (emission reductions and economics), scenarios | – | Planned |
 
 It also compares saved scenarios across sectors and shows every reference
 table. When run locally the tables are editable, so country-specific (Tier 2)
