@@ -1,5 +1,5 @@
 grid,ef,unit,source
-SEN Santiago,0.2421,kg CO2e/kWh,
 SEN (Chile),0.3,kg CO2e/kWh,
+SEN Santiago,0.2421,kg CO2e/kWh,
 Escenario: red 100% carbón,1.0,kg CO2e/kWh,Supuesto de modelación (ejercicio de clase)
 Escenario: 100% renovable (PPA),0,kg CO2e/kWh,Supuesto de modelación (ejercicio de clase)
