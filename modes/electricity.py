@@ -20,6 +20,8 @@ def render() -> None:
         unit = st.selectbox(T("Unidad"), ["kWh", "MWh", "GWh"])
         quantity = num_input(f"{T('Consumo')} ({unit})", min_value=0.0, value=1000.0, step=100.0)
 
+        n_units = num_input(T("Número de equipos o vehículos iguales"), 1.0, None, 1.0, key="elec_units", help=T("La cantidad de arriba es por unidad; el resultado se multiplica por este número."))
+
         st.subheader(T("2. Factor de emisión de la red"))
         grid = st.selectbox(T("Red"), list(grids.index) + [OWN], format_func=T)
         if grid == OWN:
@@ -31,7 +33,7 @@ def render() -> None:
             source = f"{grid}" + (f", {noted}" if isinstance(noted, str) and noted else "")
             st.caption(f"{number(factor)} kg CO2e/kWh")
 
-    table = breakdown_from_electricity(quantity, unit, factor, source)
+    table = breakdown_from_electricity(quantity, unit, factor, source, n_units)
 
     with right:
         st.subheader(T("Resultado"))
@@ -40,4 +42,4 @@ def render() -> None:
         b.metric(T("Total"), f"{number(total_of(table, 't CO2e'))} t CO2e")
         st.caption(T("En el inventario nacional estas emisiones se informan en generación eléctrica (1A1). En una huella corporativa son Alcance 2."))
         show_steps(table)
-        save_and_download(table, f"{T('Electricidad')}, {number(quantity)} {unit}", total_of(table), "electricity")
+        save_and_download(table, f"{T('Electricidad')}, {number(quantity)} {unit}" + (f" × {n_units:g}" if n_units != 1 else ""), total_of(table), "electricity")

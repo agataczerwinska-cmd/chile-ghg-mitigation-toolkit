@@ -70,6 +70,8 @@ def render() -> None:
             unit = st.selectbox(T("Unidad"), units, format_func=lambda u: T(UNIT_NAMES[u]), key=f"unit_{factor_id}_{lang()}")
             quantity = num_input(f"{T('Cantidad')} ({unit})", min_value=0.0, value=1000.0, step=100.0, key="quantity")
 
+        n_units = num_input(T("Número de equipos o vehículos iguales"), 1.0, None, 1.0, key="fuel_units", help=T("La cantidad de arriba es por unidad; el resultado se multiplica por este número."))
+
         st.subheader(T("3. Factores"))
         pci_source = st.radio(
             T("Poder calorífico"),
@@ -99,11 +101,11 @@ def render() -> None:
             overrides = {k: v for k, v in overrides.items() if v != float(defaults[k])}
 
     if by_distance:
-        table = breakdown_from_distance(km, litres_per_100km, factor_id, pci_source, overrides)
-        label = f"{T(ef['example'])}, {number(km)} km"
+        table = breakdown_from_distance(km, litres_per_100km, factor_id, pci_source, overrides, n_units)
+        label = f"{T(ef['example'])}, {number(km)} km" + (f" × {n_units:g}" if n_units != 1 else "")
     else:
-        table = breakdown_from_quantity(quantity, unit, factor_id, pci_source, overrides=overrides)
-        label = f"{T(ef['example'])}, {number(quantity)} {unit}"
+        table = breakdown_from_quantity(quantity, unit, factor_id, pci_source, overrides=overrides, units=n_units)
+        label = f"{T(ef['example'])}, {number(quantity)} {unit}" + (f" × {n_units:g}" if n_units != 1 else "")
 
     biogenic = bool(ef["biogenic_co2"])
 

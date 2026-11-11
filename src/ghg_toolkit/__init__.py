@@ -9,7 +9,11 @@ from .breakdown import (
     units_for,
 )
 from .combustion import GWP_AR5, Emissions, combustion_emissions
-from .electrification import break_even_grid_factor, breakdown_electric_replacement
+from .electrification import (
+    break_even_grid_factor,
+    breakdown_electric_replacement,
+    breakdown_electric_vehicle,
+)
 from .electricity import breakdown_from_electricity
 from .forestry import breakdown_from_forest_growth, breakdown_from_wood_volume
 from .factors import (
@@ -31,6 +35,7 @@ from .transport import emissions_from_distance, emissions_from_fuel_volume
 __all__ = [
     "break_even_grid_factor",
     "breakdown_electric_replacement",
+    "breakdown_electric_vehicle",
     "breakdown_from_forest_growth",
     "breakdown_from_wood_volume",
     "load_forest_factors",

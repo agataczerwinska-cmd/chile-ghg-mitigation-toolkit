@@ -1,4 +1,4 @@
-"""Compare a fuel-burning machine with an electric one doing the same work."""
+"""Compare a fuel-burning machine or vehicle with an electric one doing the same job."""
 
 import pandas as pd
 import streamlit as st
@@ -6,6 +6,8 @@ import streamlit as st
 from ghg_toolkit import (
     break_even_grid_factor,
     breakdown_electric_replacement,
+    breakdown_electric_vehicle,
+    breakdown_from_distance,
     breakdown_from_quantity,
     load_emission_factors,
     load_fuel_properties,
@@ -19,13 +21,15 @@ from .common import header, num_input, number, precise, show_steps
 from .i18n import T, lang
 
 OWN = "Otro (escribir el factor)"
+BY_ENERGY = "Mismo trabajo útil (eficiencias)"
+BY_DISTANCE = "Misma distancia (consumo por km)"
 
 
 def render() -> None:
     factors = load_emission_factors()
     fuels = load_fuel_properties()
     grids = load_grid_factors()
-    header("Electrificar un equipo", "Compara un equipo a combustible con uno eléctrico que hace el mismo trabajo útil.")
+    header("Electrificar un equipo", "Compara un equipo o vehículo a combustible con uno eléctrico que hace el mismo trabajo.")
     left, right = st.columns([1, 2], gap="large")
 
     with left:
@@ -41,8 +45,9 @@ def render() -> None:
             format_func=lambda i: f"{T(options.loc[i, 'example'])} · {T(fuels.loc[options.loc[i, 'fuel'], 'name'])}",
             key=f"el_equipment_{sector}_{lang()}",
         )
-        unit = st.selectbox(T("Unidad"), units_for(factor_id), format_func=lambda u: T(UNIT_NAMES[u]), key=f"el_unit_{factor_id}_{lang()}")
-        quantity = num_input(f"{T('Combustible al año')} ({unit})", value=1500000.0, key="el_quantity")
+        units = units_for(factor_id)
+        modes = [BY_ENERGY, BY_DISTANCE] if "L" in units else [BY_ENERGY]
+        mode = st.radio(T("Comparar por"), modes, format_func=T, index=len(modes) - 1 if sector == "1A3b" else 0, key=f"el_mode_{sector}")
         pci_source = st.radio(
             T("Poder calorífico"),
             ["bne", "ipcc"],
@@ -50,10 +55,22 @@ def render() -> None:
             horizontal=True,
             key="el_pci",
         )
-        fuel_eff = num_input(T("Eficiencia del equipo a combustible (%)"), 1.0, 100.0, 35.0, key="el_eff_fuel", help=T("Parte de la energía del combustible que se convierte en trabajo o calor útil."))
+        if mode == BY_DISTANCE:
+            km = num_input(T("Distancia al año por vehículo (km)"), value=60000.0, key="el_km")
+            economy_unit = st.radio(T("Rendimiento en"), ["km/L", "L/100 km"], horizontal=True, index=1, key="el_economy_unit")
+            economy = num_input(f"{T('Rendimiento')} ({economy_unit})", 0.01, None, 45.0 if economy_unit == "L/100 km" else 2.2, key=f"el_economy_{economy_unit}")
+            litres_per_100km = 100 / economy if economy_unit == "km/L" else economy
+        else:
+            unit = st.selectbox(T("Unidad"), units, format_func=lambda u: T(UNIT_NAMES[u]), key=f"el_unit_{factor_id}_{lang()}")
+            quantity = num_input(f"{T('Combustible al año por equipo')} ({unit})", value=1500000.0, key="el_quantity")
+            fuel_eff = num_input(T("Eficiencia del equipo a combustible (%)"), 1.0, 100.0, 35.0, key="el_eff_fuel", help=T("Parte de la energía del combustible que se convierte en trabajo o calor útil."))
+        n_units = num_input(T("Número de equipos o vehículos iguales"), 1.0, None, 1.0, key="el_units", help=T("La cantidad de arriba es por unidad; el resultado se multiplica por este número."))
 
         st.subheader(T("2. Equipo eléctrico"))
-        electric_eff = num_input(T("Eficiencia del equipo eléctrico (%)"), 1.0, 1000.0, 85.0, key="el_eff_electric", help=T("Motor eléctrico: 85 a 95%. Bomba de calor: usa su COP en porcentaje (COP 3 = 300%)."))
+        if mode == BY_DISTANCE:
+            kwh_per_km = num_input(T("Consumo eléctrico (kWh/km)"), 0.001, None, 1.2, key="el_kwh_km")
+        else:
+            electric_eff = num_input(T("Eficiencia del equipo eléctrico (%)"), 1.0, 1000.0, 85.0, key="el_eff_electric", help=T("Motor eléctrico: 85 a 95%. Bomba de calor: usa su COP en porcentaje (COP 3 = 300%)."))
         grid = st.selectbox(T("Red"), list(grids.index) + [OWN], format_func=T, key="el_grid")
         if grid == OWN:
             grid_factor = num_input(T("Factor (kg CO2e/kWh)"), value=0.25, key="el_grid_factor")
@@ -63,9 +80,13 @@ def render() -> None:
             source = grid
             st.caption(f"{precise(grid_factor)} kg CO2e/kWh")
 
-    fuel_table = breakdown_from_quantity(quantity, unit, factor_id, pci_source)
-    fuel_tj = float(fuel_table[fuel_table["Unidad"] == "TJ"]["Valor"].iloc[0])
-    electric_table = breakdown_electric_replacement(fuel_tj, fuel_eff / 100, electric_eff / 100, grid_factor, source)
+    if mode == BY_DISTANCE:
+        fuel_table = breakdown_from_distance(km, litres_per_100km, factor_id, pci_source, units=n_units)
+        electric_table = breakdown_electric_vehicle(km, kwh_per_km, grid_factor, source, n_units)
+    else:
+        fuel_table = breakdown_from_quantity(quantity, unit, factor_id, pci_source, units=n_units)
+        fuel_tj = float(fuel_table[fuel_table["Unidad"] == "TJ"]["Valor"].iloc[0])
+        electric_table = breakdown_electric_replacement(fuel_tj, fuel_eff / 100, electric_eff / 100, grid_factor, source)
     fuel_t = total_of(fuel_table, "t CO2e")
     electric_t = total_of(electric_table, "t CO2e")
     kwh = float(electric_table[electric_table["Unidad"] == "kWh"]["Valor"].iloc[0])
@@ -88,7 +109,7 @@ def render() -> None:
         show_steps(fuel_table)
 
         if st.button(T("Guardar ambos para comparar"), type="primary"):
-            label = T(options.loc[factor_id, "example"])
+            label = T(options.loc[factor_id, "example"]) + (f" × {n_units:g}" if n_units != 1 else "")
             st.session_state["scenarios"][f"{label} ({T('combustible')})"] = total_of(fuel_table)
             st.session_state["scenarios"][f"{label} ({T('eléctrico')})"] = total_of(electric_table)
             st.toast(T("Guardado"))

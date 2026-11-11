@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from ghg_toolkit import (  # noqa: E402
     breakdown_electric_replacement,
+    breakdown_electric_vehicle,
     breakdown_from_distance,
     breakdown_from_electricity,
     breakdown_from_forest_growth,
@@ -48,6 +49,10 @@ def test_step_tables_are_fully_translated():
         breakdown_from_quantity(5, "TJ", "1A2_licor_negro"),
         breakdown_from_electricity(2, "GWh", 0.3, "dato propio"),
         breakdown_electric_replacement(54.18, 0.35, 0.85, 0.25, "SEN (Chile)"),
+        breakdown_electric_vehicle(60000, 1.2, 0.25, "dato propio", 3000),
+        breakdown_from_distance(60000, 45, "1A3b_diesel_bus", units=3000),
+        breakdown_from_quantity(100, "L", "1A2_diesel", units=5),
+        breakdown_from_electricity(10, "MWh", 0.3, "SEN (Chile)", 4),
         breakdown_from_wood_volume(1000, "Especies nativas", overrides={"feb": 2}),
         breakdown_from_forest_growth(100, 6, "Pino insigne (Pinus radiata)"),
         fod_series({2020: 1000, 2021: 1000}, doc=0.15, k=0.19, mcf=1.0).reset_index(),

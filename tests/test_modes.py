@@ -68,3 +68,23 @@ def test_electric_haul_truck_matches_class_exercise():
     assert values[("Electricidad necesaria", "MWh")] == pytest.approx(6197.06, abs=0.01)
     assert total_of(table, "t CO2e") == pytest.approx(1549.26, abs=0.01)
     assert break_even_grid_factor(4014738, 6197058.8) == pytest.approx(0.6478, abs=0.0001)
+
+
+def test_bus_fleet_matches_class_exercise():
+    from ghg_toolkit import breakdown_electric_vehicle, breakdown_from_distance
+
+    # 3000 buses x 60,000 km; diesel 45 L/100 km (IPCC calorific value); electric 1.2 kWh/km at 0.25 kg/kWh
+    diesel = breakdown_from_distance(60000, 45, "1A3b_diesel_bus", pci_source="ipcc", units=3000)
+    co2 = float(diesel[diesel["Unidad"] == "kg CO2"]["Valor"].iloc[0])
+    assert co2 / 1000 == pytest.approx(216795.852)
+    one = breakdown_from_distance(60000, 45, "1A3b_diesel_bus", pci_source="ipcc")
+    assert total_of(diesel) == pytest.approx(total_of(one) * 3000)
+    electric = breakdown_electric_vehicle(60000, 1.2, 0.25, units=3000)
+    assert total_of(electric, "t CO2e") == pytest.approx(54000)
+
+
+def test_units_multiply_fuel_and_electricity():
+    assert total_of(breakdown_from_quantity(100, "L", "1A2_diesel", units=5)) == pytest.approx(
+        total_of(breakdown_from_quantity(500, "L", "1A2_diesel"))
+    )
+    assert total_of(breakdown_from_electricity(10, "MWh", 0.3, units=4)) == pytest.approx(12000)

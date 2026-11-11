@@ -33,7 +33,7 @@ step, its value, its unit and its source.
 |---|---|---|
 | Fuel combustion (power, industry and mining, transport, buildings) | IPCC 2006 Vol. 2, Tier 1, or your own factors (Tier 2) | Done |
 | Grid electricity | Consumption x grid factor | Done |
-| Electrifying a machine (fuel vs electric for the same useful work) | Efficiencies and grid factor, with break-even | Done |
+| Electrifying a machine or vehicle (fuel vs electric, by useful work or by distance, for one unit or a fleet) | Efficiencies or consumption per km, grid factor, break-even | Done |
 | Landfill methane | IPCC 2006 Vol. 5, First Order Decay | Done |
 | Forest land: wood volume to CO2 (harvest, firewood, growth) | IPCC 2006 with Chilean national factors (Gayoso et al.) | Done |
 | Agriculture, carbon footprints, mitigation projects, scenarios | – | Planned |

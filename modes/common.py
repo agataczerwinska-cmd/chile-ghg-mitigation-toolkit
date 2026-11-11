@@ -143,7 +143,7 @@ def show_steps(table: pd.DataFrame) -> None:
         shown,
         width="stretch",
         height=38 * (len(shown) + 1),
-        column_config={shown.columns[1]: st.column_config.TextColumn(alignment="right")},
+        column_config={shown.columns[1]: st.column_config.TextColumn(alignment="right", width="medium")},
     )
 
 

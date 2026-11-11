@@ -6,14 +6,29 @@ KWH_PER = {"kWh": 1, "MWh": 1_000, "GWh": 1_000_000}
 
 
 def breakdown_from_electricity(
-    quantity: float, unit: str, grid_factor_kg_per_kwh: float, factor_source: str = "dato"
+    quantity: float,
+    unit: str,
+    grid_factor_kg_per_kwh: float,
+    factor_source: str = "dato",
+    units: float = 1,
 ) -> pd.DataFrame:
-    """Table with every step from electricity used (kWh, MWh or GWh) to kg CO2e."""
+    """Table with every step from electricity used (kWh, MWh or GWh) to kg CO2e.
+
+    `units` is the number of identical machines or vehicles; `quantity` is per unit.
+    """
     if unit not in KWH_PER:
         raise ValueError(f"unit must be one of {list(KWH_PER)}")
+    if units != 1:
+        rows = [
+            ("Electricidad por unidad", quantity, unit, "dato"),
+            ("Número de unidades", units, "–", "dato"),
+            ("Electricidad consumida", quantity * units, unit, "por unidad × número de unidades"),
+        ]
+        quantity = quantity * units
+    else:
+        rows = [("Electricidad consumida", quantity, unit, "dato")]
     kwh = quantity * KWH_PER[unit]
     co2e = kwh * grid_factor_kg_per_kwh
-    rows = [("Electricidad consumida", quantity, unit, "dato")]
     if unit != "kWh":
         rows.append(("Electricidad consumida", kwh, "kWh", f"{unit} × {KWH_PER[unit]:,}".replace(",", ".")))
     rows += [

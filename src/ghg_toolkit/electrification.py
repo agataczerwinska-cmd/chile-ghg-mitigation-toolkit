@@ -52,6 +52,41 @@ def breakdown_electric_replacement(
     return df
 
 
+def breakdown_electric_vehicle(
+    km: float,
+    kwh_per_km: float,
+    grid_factor_kg_per_kwh: float,
+    factor_source: str = "dato",
+    units: float = 1,
+) -> pd.DataFrame:
+    """Table with every step from kilometres driven by an electric vehicle to kg CO2e.
+
+    `units` is the number of identical vehicles; `km` is per vehicle.
+    """
+    rows = []
+    if units != 1:
+        rows = [
+            ("Distancia por unidad", km, "km", "dato"),
+            ("Número de unidades", units, "–", "dato"),
+        ]
+        km = km * units
+    kwh = km * kwh_per_km
+    co2e = kwh * grid_factor_kg_per_kwh
+    rows += [
+        ("Distancia recorrida", km, "km", "por unidad × número de unidades" if units != 1 else "dato"),
+        ("Consumo eléctrico", kwh_per_km, "kWh/km", "dato"),
+        ("Electricidad necesaria", kwh, "kWh", "km × kWh/km"),
+        ("Electricidad necesaria", kwh / 1000, "MWh", "kWh ÷ 1000"),
+        ("Factor de emisión de la red", grid_factor_kg_per_kwh, "kg CO2e/kWh", factor_source),
+        ("TOTAL", co2e, "kg CO2e", "kWh × factor de la red"),
+        ("TOTAL", co2e / 1000, "t CO2e", "kg CO2e ÷ 1000"),
+    ]
+    df = pd.DataFrame(rows, columns=["Paso", "Valor", "Unidad", "Cálculo / fuente"])
+    df["Valor"] = df["Valor"].astype(float)
+    df.index = range(1, len(df) + 1)
+    return df
+
+
 def break_even_grid_factor(fuel_total_kg_co2e: float, electricity_kwh: float) -> float:
     """Grid factor (kg CO2e/kWh) at which the electric machine emits as much as the fuel one."""
     return fuel_total_kg_co2e / electricity_kwh

@@ -37,8 +37,11 @@ def breakdown_from_quantity(
     pci_source: str = "bne",
     _first_rows: Optional[list] = None,
     overrides: Optional[dict] = None,
+    units: float = 1,
 ) -> pd.DataFrame:
     """Table with every step from a fuel quantity (L, kg, t, m3, MJ or TJ) to kg CO2e.
+
+    `units` is the number of identical machines or vehicles; `quantity` is per unit.
 
     `overrides` replaces default values with your own (Tier 2 or plant data).
     Keys: "density", "pci", "ef_co2", "ef_ch4", "ef_n2o".
@@ -58,7 +61,17 @@ def breakdown_from_quantity(
         if f"ef_{gas}" in own:
             ef[f"ef_{gas}_kg_tj"] = own[f"ef_{gas}"]
     props = load_fuel_properties().loc[ef["fuel"]]
-    rows = list(_first_rows) if _first_rows else [("Combustible consumido", quantity, unit, "dato")]
+    if _first_rows:
+        rows = list(_first_rows)
+    elif units != 1:
+        rows = [
+            ("Combustible por unidad", quantity, unit, "dato"),
+            ("Número de unidades", units, "–", "dato"),
+            ("Combustible consumido", quantity * units, unit, "por unidad × número de unidades"),
+        ]
+        quantity = quantity * units
+    else:
+        rows = [("Combustible consumido", quantity, unit, "dato")]
 
     if unit in ("MJ", "TJ"):
         mj = quantity if unit == "MJ" else quantity * MJ_PER_TJ
@@ -124,11 +137,22 @@ def breakdown_from_distance(
     factor_id: str,
     pci_source: str = "bne",
     overrides: Optional[dict] = None,
+    units: float = 1,
 ) -> pd.DataFrame:
-    """Table with every step from kilometres driven to kg CO2e."""
+    """Table with every step from kilometres driven to kg CO2e.
+
+    `units` is the number of identical vehicles; `km` is per vehicle.
+    """
+    first = []
+    if units != 1:
+        first = [
+            ("Distancia por unidad", km, "km", "dato"),
+            ("Número de unidades", units, "–", "dato"),
+        ]
+        km = km * units
     litres = km * litres_per_100km / 100
-    first = [
-        ("Distancia recorrida", km, "km", "dato"),
+    first += [
+        ("Distancia recorrida", km, "km", "por unidad × número de unidades" if units != 1 else "dato"),
         ("Rendimiento", litres_per_100km, "L/100 km", "dato"),
         ("Combustible consumido", litres, "L", "km × L/100 km ÷ 100"),
     ]
