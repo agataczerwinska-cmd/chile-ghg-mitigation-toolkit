@@ -11,16 +11,14 @@ from ghg_toolkit import (
     breakdown_from_quantity,
     load_emission_factors,
     load_fuel_properties,
-    load_grid_factors,
     total_of,
     units_for,
 )
 
 from .combustion import SECTORS, UNIT_NAMES
-from .common import header, num_input, number, precise, show_steps
+from .common import grid_selector, header, num_input, number, precise, show_steps
 from .i18n import T, lang
 
-OWN = "Otro (escribir el factor)"
 BY_ENERGY = "Mismo trabajo útil (eficiencias)"
 BY_DISTANCE = "Misma distancia (consumo por km)"
 
@@ -28,7 +26,6 @@ BY_DISTANCE = "Misma distancia (consumo por km)"
 def render() -> None:
     factors = load_emission_factors()
     fuels = load_fuel_properties()
-    grids = load_grid_factors()
     header("Electrificar un equipo", "Compara un equipo o vehículo a combustible con uno eléctrico que hace el mismo trabajo.")
     left, right = st.columns([1, 2], gap="large")
 
@@ -71,14 +68,7 @@ def render() -> None:
             kwh_per_km = num_input(T("Consumo eléctrico (kWh/km)"), 0.001, None, 1.2, key="el_kwh_km")
         else:
             electric_eff = num_input(T("Eficiencia del equipo eléctrico (%)"), 1.0, 1000.0, 85.0, key="el_eff_electric", help=T("Motor eléctrico: 85 a 95%. Bomba de calor: usa su COP en porcentaje (COP 3 = 300%)."))
-        grid = st.selectbox(T("Red"), list(grids.index) + [OWN], format_func=T, key="el_grid")
-        if grid == OWN:
-            grid_factor = num_input(T("Factor (kg CO2e/kWh)"), value=0.25, key="el_grid_factor")
-            source = "dato propio"
-        else:
-            grid_factor = float(grids.loc[grid, "ef"])
-            source = grid
-            st.caption(f"{precise(grid_factor)} kg CO2e/kWh")
+        grid_factor, source = grid_selector("electrify")
 
     if mode == BY_DISTANCE:
         fuel_table = breakdown_from_distance(km, litres_per_100km, factor_id, pci_source, units=n_units)

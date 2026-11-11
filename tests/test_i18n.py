@@ -73,6 +73,7 @@ def test_every_data_label_has_a_translation():
         + [n for n in load_forest_factors()["note"] if isinstance(n, str)]
         + list(load_grid_factors().index)
         + list(params[params["parameter"].isin(["DOC", "MCF"])]["item"])
+        + ["Central a carbón", "Ciclo combinado", "Parque solar", "Parque eólico"]
         + PLANNED
         + list(SECTIONS)
         + [title for entries in SECTIONS.values() for title, *_ in entries]

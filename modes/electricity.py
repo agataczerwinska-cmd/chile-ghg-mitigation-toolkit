@@ -2,16 +2,14 @@
 
 import streamlit as st
 
-from ghg_toolkit import breakdown_from_electricity, load_grid_factors, total_of
+from ghg_toolkit import breakdown_from_electricity, total_of
 
-from .common import header, num_input, number, save_and_download, show_steps
+from .common import grid_selector, header, num_input, number, save_and_download, show_steps
 from .i18n import T
 
-OWN = "Otro (escribir el factor)"
 
 
 def render() -> None:
-    grids = load_grid_factors()
     header("Electricidad", "Emisiones de la electricidad comprada a la red: consumo × factor de emisión.")
     left, right = st.columns([1, 2], gap="large")
 
@@ -23,15 +21,7 @@ def render() -> None:
         n_units = num_input(T("Número de equipos o vehículos iguales"), 1.0, None, 1.0, key="elec_units", help=T("La cantidad de arriba es por unidad; el resultado se multiplica por este número."))
 
         st.subheader(T("2. Factor de emisión de la red"))
-        grid = st.selectbox(T("Red"), list(grids.index) + [OWN], format_func=T)
-        if grid == OWN:
-            factor = num_input(T("Factor (kg CO2e/kWh)"), min_value=0.0, value=0.25, step=0.01, format="%.4f")
-            source = "dato propio"
-        else:
-            factor = float(grids.loc[grid, "ef"])
-            noted = grids.loc[grid, "source"]
-            source = f"{grid}" + (f", {noted}" if isinstance(noted, str) and noted else "")
-            st.caption(f"{number(factor)} kg CO2e/kWh")
+        factor, source = grid_selector("electricity")
 
     table = breakdown_from_electricity(quantity, unit, factor, source, n_units)
 

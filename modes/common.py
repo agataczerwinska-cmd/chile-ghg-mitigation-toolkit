@@ -161,3 +161,34 @@ def save_and_download(table: pd.DataFrame, default_name: str, total_kg_co2e: flo
         mime="text/csv",
         key=f"download_{key}",
     )
+
+
+OWN_GRID = "Otro (escribir el factor)"
+CALCULATED_GRID = "Factor calculado (página Factor de la red)"
+
+
+def grid_selector(key: str) -> tuple:
+    """Grid dropdown shared by every page: returns (factor kg CO2e/kWh, source text)."""
+    from ghg_toolkit import load_grid_factors
+
+    grids = load_grid_factors()
+    options = list(grids.index)
+    calculated = st.session_state.get("calculated_grid")
+    if calculated:
+        options.append(CALCULATED_GRID)
+    options.append(OWN_GRID)
+    grid = st.selectbox(
+        T("Red"),
+        options,
+        format_func=lambda g: f"{T(CALCULATED_GRID)}: {calculated['name']}" if g == CALCULATED_GRID else T(g),
+        key=f"grid_{key}",
+    )
+    if grid == OWN_GRID:
+        return num_input(T("Factor (kg CO2e/kWh)"), value=0.25, key=f"grid_factor_{key}"), "dato propio"
+    if grid == CALCULATED_GRID:
+        st.caption(f"{precise(calculated['value'])} kg CO2e/kWh")
+        return calculated["value"], calculated["name"]
+    factor = float(grids.loc[grid, "ef"])
+    noted = grids.loc[grid, "source"]
+    st.caption(f"{precise(factor)} kg CO2e/kWh")
+    return factor, grid + (f", {noted}" if isinstance(noted, str) and noted else "")

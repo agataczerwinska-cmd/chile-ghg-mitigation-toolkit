@@ -88,3 +88,31 @@ def test_units_multiply_fuel_and_electricity():
         total_of(breakdown_from_quantity(500, "L", "1A2_diesel"))
     )
     assert total_of(breakdown_from_electricity(10, "MWh", 0.3, units=4)) == pytest.approx(12000)
+
+
+def test_grid_factor_by_hand():
+    from ghg_toolkit import RENEWABLE, grid_factor
+
+    # coal: 1,000,000 MWh at 38% -> 9473.684 TJ; x (94600 + 1x28 + 1.5x265) kg CO2e/TJ
+    coal_t = 1_000_000 * 0.0036 / 0.38 * (94600 + 28 + 1.5 * 265) / 1000
+    result = grid_factor(
+        [
+            {"name": "coal", "factor_id": "1A1_carbon_bituminoso", "generation_mwh": 1_000_000, "efficiency": 0.38},
+            {"name": "solar", "factor_id": RENEWABLE, "generation_mwh": 1_000_000},
+        ],
+        losses=0.05,
+    )
+    assert result["emissions_t"] == pytest.approx(coal_t)
+    assert result["factor_generation"] == pytest.approx(coal_t / 2_000_000)
+    assert result["factor_consumption"] == pytest.approx(coal_t / 2_000_000 / 0.95)
+
+
+def test_grid_factor_from_fuel_burned():
+    from ghg_toolkit import grid_factor
+
+    # 400 million m3 of natural gas -> 790,655.36 t CO2e (class 4 exercise), 2000 GWh generated
+    result = grid_factor(
+        [{"name": "gas", "factor_id": "1A1_gas_natural", "generation_mwh": 2_000_000, "fuel_quantity": 400e6, "fuel_unit": "m3"}]
+    )
+    assert result["emissions_t"] == pytest.approx(790655.36)
+    assert result["factor_generation"] == pytest.approx(0.39532768)
