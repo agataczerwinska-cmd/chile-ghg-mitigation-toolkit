@@ -3,7 +3,7 @@
 import pandas as pd
 import streamlit as st
 
-from ghg_toolkit import RENEWABLE, grid_factor, load_emission_factors, load_fuel_properties, units_for
+from ghg_toolkit import RENEWABLE, breakdown_from_quantity, grid_factor, load_emission_factors, load_fuel_properties, units_for
 
 from .common import ef_note, header, num_input, number, pci_note, precise
 from .i18n import T, lang
@@ -133,6 +133,14 @@ def render() -> None:
                 continue
             if p.get("fuel_quantity"):
                 st.caption(f"{p['name']}: {pci_note(p['factor_id'], p['fuel_unit'], pci_source)}")
+                steps = breakdown_from_quantity(p["fuel_quantity"], p["fuel_unit"], p["factor_id"], pci_source)
+                fuel_tj = float(steps[steps["Unidad"] == "TJ"]["Valor"].iloc[0])
+                implied = p["generation_mwh"] * 0.0036 / fuel_tj * 100 if fuel_tj else float("inf")
+                message = f"{p['name']}: " + T("con ese combustible, la eficiencia sería de") + f" {number(implied)} %."
+                if implied > 100 or implied < 15:
+                    st.warning(message + " " + T("No es posible: revisa la cantidad y la unidad del combustible quemado en el año."))
+                else:
+                    st.caption(message)
             else:
                 unit = next(u for u in units_for(p["factor_id"]) if u not in ("MJ", "TJ"))
                 st.caption(f"{p['name']}: {pci_note(p['factor_id'], unit, pci_source)}. " + T("No se usa en esta fila, porque se calcula con la eficiencia."))
