@@ -1,42 +1,42 @@
-id,ipcc_category,use,example,fuel,ef_co2_kg_tj,ef_ch4_kg_tj,ef_n2o_kg_tj,ipcc_table,biogenic_co2,note
-1A1_carbon_bituminoso,1A1,Generación eléctrica,Central a carbón,carbon_bituminoso,94600,1,1.5,2.2,False,
-1A1_carbon_subbituminoso,1A1,Generación eléctrica,Central a carbón,carbon_subbituminoso,96100,1,1.5,2.2,False,
-1A1_gas_natural,1A1,Generación eléctrica,Ciclo combinado o turbina,gas_natural,56100,1,0.1,2.2,False,
-1A1_diesel,1A1,Generación eléctrica,Respaldo,diesel,74100,3,0.6,2.2,False,
-1A1_fuel_oil_6,1A1,Generación eléctrica,Central a fuel oil,fuel_oil_6,77400,3,0.6,2.2,False,
-1A1_coque_petroleo,1A1,Generación eléctrica,Central a coque,coque_petroleo,97500,3,0.6,2.2,False,
-1A1_madera,1A1,Generación eléctrica,Biomasa / cogeneración,madera,112000,30,4,2.2,True,CO2 biogénico
-1A1_biogas,1A1,Generación eléctrica,Biogás de relleno,biogas,54600,1,0.1,2.2,True,CO2 biogénico
-1A1_gas_refineria,1A1,Refinación,Hornos de refinería,gas_refineria,57600,1,0.1,2.2,False,
-1A2_gas_natural,1A2,Estacionaria,Caldera,gas_natural,56100,1,0.1,2.3,False,
-1A2_diesel,1A2,Estacionaria,Caldera u horno,diesel,74100,3,0.6,2.3,False,
-1A2_fuel_oil_6,1A2,Estacionaria,Caldera (p. ej. SX-EW),fuel_oil_6,77400,3,0.6,2.3,False,
-1A2_glp,1A2,Estacionaria,Caldera u horno,glp,63100,1,0.1,2.3,False,
-1A2_carbon_bituminoso,1A2,Estacionaria,Horno de cemento o cal,carbon_bituminoso,94600,10,1.5,2.3,False,La calcinación va en 2A
-1A2_coque_petroleo,1A2,Estacionaria,Horno de cemento,coque_petroleo,97500,3,0.6,2.3,False,La calcinación va en 2A
-1A2_licor_negro,1A2,Estacionaria,Caldera de celulosa,licor_negro,95300,3,2,2.3,True,CO2 biogénico
-1A2_madera,1A2,Estacionaria,Caldera de biomasa,madera,112000,30,4,2.3,True,CO2 biogénico
-1A2_diesel_fuera_de_ruta,1A2,Fuera de ruta,"CAEX, palas, construcción",diesel,74100,4.15,28.6,3.3.1,False,Móvil fuera de ruta
-1A3a_kerosene_aviacion,1A3a,Aérea,Avión comercial,kerosene_aviacion,71500,0.5,2,3.6.5,False,Internacional = bunkers
-1A3b_gasolina_sin_control,1A3b,Liviano,Auto gasolina sin control,gasolina,69300,33,3.2,3.2.2,False,
-1A3b_gasolina_catalizador_oxidacion,1A3b,Liviano,Auto gasolina con catalizador de oxidación,gasolina,69300,25,8,3.2.2,False,
-1A3b_gasolina_moderno,1A3b,Liviano,Auto gasolina moderno (1995 o posterior),gasolina,69300,3.8,5.7,3.2.2,False,
-1A3b_diesel_liviano,1A3b,Liviano,Auto o camioneta diésel,diesel,74100,3.9,3.9,3.2.2,False,
-1A3b_diesel_bus,1A3b,Pesado,Bus diésel,diesel,74100,3.9,3.9,3.2.2,False,
-1A3b_diesel_camion,1A3b,Pesado,Camión / tractocamión,diesel,74100,3.9,3.9,3.2.2,False,
-1A3b_glp,1A3b,Liviano,Vehículo a GLP,glp,63100,62,0.2,3.2.2,False,
-1A3b_gnc,1A3b,Liviano o pesado,Vehículo a GNC,gas_natural,56100,92,3,3.2.2,False,
-1A3c_diesel,1A3c,Ferroviario,Locomotora diésel,diesel,74100,4.15,28.6,3.4.1,False,Trenes eléctricos → 1A1
-1A3d_diesel,1A3d,Marítimo,Barco de cabotaje,diesel,74100,7,2,3.5.3,False,Internacional = bunkers
-1A3d_ifo_180,1A3d,Marítimo,Barco de cabotaje,ifo_180,77400,7,2,3.5.3,False,Internacional = bunkers
-1A4a_gas_natural,1A4a,Calefacción,Caldera de hospital u oficina,gas_natural,56100,5,0.1,2.4,False,
-1A4a_diesel,1A4a,Calefacción,Caldera de colegio,diesel,74100,10,0.6,2.4,False,
-1A4a_glp,1A4a,Cocina,Restaurante,glp,63100,5,0.1,2.4,False,
-1A4b_glp,1A4b,Cocina y agua caliente,Cocina o calefón,glp,63100,5,0.1,2.5,False,
-1A4b_gas_natural,1A4b,Cocina y calefacción,Cocina o caldera,gas_natural,56100,5,0.1,2.5,False,
-1A4b_kerosene,1A4b,Calefacción,Estufa a parafina,kerosene,71900,10,0.6,2.5,False,
-1A4b_lena,1A4b,Calefacción,Estufa a leña,madera,112000,300,4,2.5,True,CO2 biogénico; CH4 alto
-1A4b_carbon_vegetal,1A4b,Calefacción,Brasero,carbon_vegetal,112000,200,1,2.5,True,CO2 biogénico
-1A4c_diesel_estacionaria,1A4c,Estacionaria,Calefactor de invernadero,diesel,74100,10,0.6,2.5,False,
-1A4c_diesel_fuera_de_ruta,1A4c,Fuera de ruta,Tractor o cosechadora,diesel,74100,4.15,28.6,3.3.1,False,
-1A4c_diesel_pesca,1A4c,Pesca,Barco pesquero,diesel,74100,7,2,3.5.3,False,
+id,ipcc_category,use,example,fuel,ef_co2_kg_tj,ef_ch4_kg_tj,ef_n2o_kg_tj,ipcc_table,biogenic_co2,note,tier,source
+1A1_carbon_bituminoso,1A1,Generación eléctrica,Central a carbón,carbon_bituminoso,94600,1,1.5,2.2,False,,1,IPCC 2006
+1A1_carbon_subbituminoso,1A1,Generación eléctrica,Central a carbón,carbon_subbituminoso,96100,1,1.5,2.2,False,,1,IPCC 2006
+1A1_gas_natural,1A1,Generación eléctrica,Ciclo combinado o turbina,gas_natural,56100,1,0.1,2.2,False,,1,IPCC 2006
+1A1_diesel,1A1,Generación eléctrica,Respaldo,diesel,74100,3,0.6,2.2,False,,1,IPCC 2006
+1A1_fuel_oil_6,1A1,Generación eléctrica,Central a fuel oil,fuel_oil_6,77400,3,0.6,2.2,False,,1,IPCC 2006
+1A1_coque_petroleo,1A1,Generación eléctrica,Central a coque,coque_petroleo,97500,3,0.6,2.2,False,,1,IPCC 2006
+1A1_madera,1A1,Generación eléctrica,Biomasa / cogeneración,madera,112000,30,4,2.2,True,CO2 biogénico,1,IPCC 2006
+1A1_biogas,1A1,Generación eléctrica,Biogás de relleno,biogas,54600,1,0.1,2.2,True,CO2 biogénico,1,IPCC 2006
+1A1_gas_refineria,1A1,Refinación,Hornos de refinería,gas_refineria,57600,1,0.1,2.2,False,,1,IPCC 2006
+1A2_gas_natural,1A2,Estacionaria,Caldera,gas_natural,56100,1,0.1,2.3,False,,1,IPCC 2006
+1A2_diesel,1A2,Estacionaria,Caldera u horno,diesel,74100,3,0.6,2.3,False,,1,IPCC 2006
+1A2_fuel_oil_6,1A2,Estacionaria,Caldera (p. ej. SX-EW),fuel_oil_6,77400,3,0.6,2.3,False,,1,IPCC 2006
+1A2_glp,1A2,Estacionaria,Caldera u horno,glp,63100,1,0.1,2.3,False,,1,IPCC 2006
+1A2_carbon_bituminoso,1A2,Estacionaria,Horno de cemento o cal,carbon_bituminoso,94600,10,1.5,2.3,False,La calcinación va en 2A,1,IPCC 2006
+1A2_coque_petroleo,1A2,Estacionaria,Horno de cemento,coque_petroleo,97500,3,0.6,2.3,False,La calcinación va en 2A,1,IPCC 2006
+1A2_licor_negro,1A2,Estacionaria,Caldera de celulosa,licor_negro,95300,3,2,2.3,True,CO2 biogénico,1,IPCC 2006
+1A2_madera,1A2,Estacionaria,Caldera de biomasa,madera,112000,30,4,2.3,True,CO2 biogénico,1,IPCC 2006
+1A2_diesel_fuera_de_ruta,1A2,Fuera de ruta,"CAEX, palas, construcción",diesel,74100,4.15,28.6,3.3.1,False,Móvil fuera de ruta,1,IPCC 2006
+1A3a_kerosene_aviacion,1A3a,Aérea,Avión comercial,kerosene_aviacion,71500,0.5,2,3.6.5,False,Internacional = bunkers,1,IPCC 2006
+1A3b_gasolina_sin_control,1A3b,Liviano,Auto gasolina sin control,gasolina,69300,33,3.2,3.2.2,False,,1,IPCC 2006
+1A3b_gasolina_catalizador_oxidacion,1A3b,Liviano,Auto gasolina con catalizador de oxidación,gasolina,69300,25,8,3.2.2,False,,1,IPCC 2006
+1A3b_gasolina_moderno,1A3b,Liviano,Auto gasolina moderno (1995 o posterior),gasolina,69300,3.8,5.7,3.2.2,False,,1,IPCC 2006
+1A3b_diesel_liviano,1A3b,Liviano,Auto o camioneta diésel,diesel,74100,3.9,3.9,3.2.2,False,,1,IPCC 2006
+1A3b_diesel_bus,1A3b,Pesado,Bus diésel,diesel,74100,3.9,3.9,3.2.2,False,,1,IPCC 2006
+1A3b_diesel_camion,1A3b,Pesado,Camión / tractocamión,diesel,74100,3.9,3.9,3.2.2,False,,1,IPCC 2006
+1A3b_glp,1A3b,Liviano,Vehículo a GLP,glp,63100,62,0.2,3.2.2,False,,1,IPCC 2006
+1A3b_gnc,1A3b,Liviano o pesado,Vehículo a GNC,gas_natural,56100,92,3,3.2.2,False,,1,IPCC 2006
+1A3c_diesel,1A3c,Ferroviario,Locomotora diésel,diesel,74100,4.15,28.6,3.4.1,False,Trenes eléctricos → 1A1,1,IPCC 2006
+1A3d_diesel,1A3d,Marítimo,Barco de cabotaje,diesel,74100,7,2,3.5.3,False,Internacional = bunkers,1,IPCC 2006
+1A3d_ifo_180,1A3d,Marítimo,Barco de cabotaje,ifo_180,77400,7,2,3.5.3,False,Internacional = bunkers,1,IPCC 2006
+1A4a_gas_natural,1A4a,Calefacción,Caldera de hospital u oficina,gas_natural,56100,5,0.1,2.4,False,,1,IPCC 2006
+1A4a_diesel,1A4a,Calefacción,Caldera de colegio,diesel,74100,10,0.6,2.4,False,,1,IPCC 2006
+1A4a_glp,1A4a,Cocina,Restaurante,glp,63100,5,0.1,2.4,False,,1,IPCC 2006
+1A4b_glp,1A4b,Cocina y agua caliente,Cocina o calefón,glp,63100,5,0.1,2.5,False,,1,IPCC 2006
+1A4b_gas_natural,1A4b,Cocina y calefacción,Cocina o caldera,gas_natural,56100,5,0.1,2.5,False,,1,IPCC 2006
+1A4b_kerosene,1A4b,Calefacción,Estufa a parafina,kerosene,71900,10,0.6,2.5,False,,1,IPCC 2006
+1A4b_lena,1A4b,Calefacción,Estufa a leña,madera,112000,300,4,2.5,True,CO2 biogénico; CH4 alto,1,IPCC 2006
+1A4b_carbon_vegetal,1A4b,Calefacción,Brasero,carbon_vegetal,112000,200,1,2.5,True,CO2 biogénico,1,IPCC 2006
+1A4c_diesel_estacionaria,1A4c,Estacionaria,Calefactor de invernadero,diesel,74100,10,0.6,2.5,False,,1,IPCC 2006
+1A4c_diesel_fuera_de_ruta,1A4c,Fuera de ruta,Tractor o cosechadora,diesel,74100,4.15,28.6,3.3.1,False,,1,IPCC 2006
+1A4c_diesel_pesca,1A4c,Pesca,Barco pesquero,diesel,74100,7,2,3.5.3,False,,1,IPCC 2006

@@ -44,6 +44,36 @@ def load_grid_factors() -> pd.DataFrame:
     return pd.read_csv(DATA_DIR / "grid_emission_factors.csv").set_index("grid")
 
 
+@lru_cache(maxsize=None)
+def load_waste_parameters() -> pd.DataFrame:
+    """Landfill model parameters (DOC, k, MCF, DOCf, F, OX)."""
+    return pd.read_csv(DATA_DIR / "waste_parameters.csv")
+
+
+@lru_cache(maxsize=None)
+def load_forest_factors() -> pd.DataFrame:
+    """Wood density, biomass expansion factor and root ratio by species."""
+    return pd.read_csv(DATA_DIR / "forest_factors.csv").set_index("species")
+
+
+TABLE_FILES = {
+    "forest_factors.csv": load_forest_factors,
+    "emission_factors.csv": load_emission_factors,
+    "fuel_properties.csv": load_fuel_properties,
+    "gwp_ar5.csv": load_gwp,
+    "conversions.csv": load_conversions,
+    "wood_density.csv": load_wood_density,
+    "grid_emission_factors.csv": load_grid_factors,
+    "waste_parameters.csv": load_waste_parameters,
+}
+
+
+def reload_tables() -> None:
+    """Forget cached tables so edited CSV files are read again."""
+    for loader in TABLE_FILES.values():
+        loader.cache_clear()
+
+
 def get_factor(factor_id: str) -> pd.Series:
     """Return one emission-factor row, with a helpful error if the id is unknown."""
     factors = load_emission_factors()

@@ -1,0 +1,57 @@
+"""Electricity, waste and own-factor (Tier 2) calculations."""
+
+import math
+
+import pytest
+
+from ghg_toolkit import (
+    breakdown_from_distance,
+    breakdown_from_electricity,
+    breakdown_from_quantity,
+    fod_series,
+    half_life_years,
+    total_of,
+)
+
+
+def test_electric_bus_exercise():
+    # 60,000 km x 1.2 kWh/km = 72,000 kWh; x 0.25 kg CO2/kWh = 18,000 kg
+    assert total_of(breakdown_from_electricity(72000, "kWh", 0.25)) == pytest.approx(18000)
+
+
+def test_electricity_units():
+    assert total_of(breakdown_from_electricity(2, "GWh", 0.3), "t CO2e") == pytest.approx(600)
+
+
+def test_own_factor_replaces_default():
+    own = breakdown_from_distance(15000, 10, "1A3b_gasolina_moderno", overrides={"pci": 44.3})
+    ipcc = breakdown_from_distance(15000, 10, "1A3b_gasolina_moderno", pci_source="ipcc")
+    assert total_of(own) == pytest.approx(total_of(ipcc))
+    assert "dato propio (Nivel 2)" in set(own["Cálculo / fuente"])
+
+
+def test_own_emission_factor():
+    table = breakdown_from_quantity(1, "TJ", "1A1_diesel", overrides={"ef_co2": 70000, "ef_ch4": 0, "ef_n2o": 0})
+    assert total_of(table) == pytest.approx(70000)
+
+
+def test_fod_first_years_by_hand():
+    # 1000 t/year of food waste, DOC 0.15, DOCf 0.5, MCF 1, k 0.19
+    s = fod_series({2020: 1000, 2021: 1000, 2022: 1000}, doc=0.15, k=0.19, mcf=1.0)
+    deposited = 1000 * 0.15 * 0.5 * 1.0
+    decay = math.exp(-0.19)
+    assert s.loc[2020, "CH4 emitido (t)"] == 0  # nothing decomposes in the first year
+    assert s.loc[2021, "CH4 emitido (t)"] == pytest.approx(deposited * (1 - decay) * 0.5 * 16 / 12)
+    stock_2021 = deposited + deposited * decay
+    assert s.loc[2022, "DDOCm descompuesto (t C)"] == pytest.approx(stock_2021 * (1 - decay))
+    assert s.loc[2022, "Emisiones (t CO2e)"] == pytest.approx(s.loc[2022, "CH4 emitido (t)"] * 28)
+
+
+def test_fod_capture_and_oxidation():
+    base = fod_series({1: 1000, 2: 1000}, doc=0.4, k=0.06, mcf=1.0)
+    mitigated = fod_series({1: 1000, 2: 1000}, doc=0.4, k=0.06, mcf=1.0, recovered_fraction=0.5, ox=0.1)
+    assert mitigated.loc[2, "CH4 emitido (t)"] == pytest.approx(base.loc[2, "CH4 emitido (t)"] * 0.5 * 0.9)
+
+
+def test_half_life():
+    assert half_life_years(0.19) == pytest.approx(3.648, abs=0.001)

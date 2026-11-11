@@ -11,7 +11,8 @@ Modelación de Políticas Climáticas (Universidad de Chile).*
 
 ## What it does / Qué hace
 
-Every calculator follows the IPCC 2006 Tier 1 method:
+Fuel combustion follows the IPCC 2006 Tier 1 method, with the option of
+replacing any default with a country-specific value (Tier 2):
 
 ```
 emissions [kg gas] = activity data [TJ] x emission factor [kg gas / TJ]
@@ -20,16 +21,33 @@ emissions [kg gas] = activity data [TJ] x emission factor [kg gas / TJ]
 and converts to CO2e with the IPCC AR5 GWPs (CH4 = 28, N2O = 265), the same
 ones Chile's national inventory (INGEI) uses.
 
-| Sector | IPCC category | Status |
-|---|---|---|
-| Road transport / Transporte terrestre | 1A3b | Done |
-| Industry and mining / Industria y minería | 1A2 | Planned |
-| Electricity generation / Generación eléctrica | 1A1 | Planned |
-| Commercial, public, residential / CPR | 1A4 | Planned |
-| Waste / Residuos | 4 | Planned |
-| Mitigation scenarios to 2050 / Escenarios de mitigación | – | Planned |
+## Visual calculator / Calculadora visual
 
-## Quick start
+`app.py` is a point-and-click calculator with one calculation mode per
+emission source. Every result comes with the full calculation chain: each
+step, its value, its unit and its source.
+
+| Mode | Method | Status |
+|---|---|---|
+| Fuel combustion (power, industry and mining, transport, buildings) | IPCC 2006 Vol. 2, Tier 1, or your own factors (Tier 2) | Done |
+| Grid electricity | Consumption x grid factor | Done |
+| Landfill methane | IPCC 2006 Vol. 5, First Order Decay | Done |
+| Forest land: wood volume to CO2 (harvest, firewood, growth) | IPCC 2006 with Chilean national factors (Gayoso et al.) | Done |
+| Agriculture, carbon footprints, mitigation projects, scenarios | – | Planned |
+
+It also compares saved scenarios across modes and lets you edit every
+reference table, so country-specific (Tier 2) factors can be added as rows
+with their source.
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+Adding a mode takes one file in `modes/` with a `render()` function and one
+line in `modes/__init__.py`.
+
+## Quick start (Python package)
 
 ```bash
 pip install -e ".[dev]"
@@ -55,6 +73,8 @@ Worked examples are in [`notebooks/`](notebooks/).
 | `data/conversions.csv` | Energy and mass unit conversions | – |
 | `data/wood_density.csv` | Firewood density by species | Named per row |
 | `data/grid_emission_factors.csv` | Electricity grid factors for Chile's SEN | To be documented |
+| `data/forest_factors.csv` | Wood density, biomass expansion factor and root ratio by species | INGEI Chile; Gayoso et al. 2002 |
+| `data/waste_parameters.csv` | Landfill model parameters (DOC, k, MCF) | IPCC 2006 Vol. 5 and INGEI Chile |
 
 - Net calorific values default to Chile's BNE figures (gross value x 0.95 for
   liquids and solids, x 0.90 for gases); pass `pci_source="ipcc"` to use the

@@ -1,0 +1,32 @@
+parameter,item,value,unit,source
+DOC,Alimentos,0.15,fracción,IPCC 2006 Vol. 5 Cuadro 2.4
+DOC,Papel y cartón,0.40,fracción,IPCC 2006 Vol. 5 Cuadro 2.4
+DOC,Textiles,0.24,fracción,IPCC 2006 Vol. 5 Cuadro 2.4
+DOC,Madera,0.43,fracción,IPCC 2006 Vol. 5 Cuadro 2.4
+DOC,Jardines y parques,0.20,fracción,IPCC 2006 Vol. 5 Cuadro 2.4
+DOC,Pañales,0.24,fracción,IPCC 2006 Vol. 5 Cuadro 2.4
+DOC,Lodos,0.13,fracción,INGEI Chile 2024
+k seco (Norte),Alimentos,0.06,1/año,INGEI Chile 2024
+k seco (Norte),Papel y cartón,0.04,1/año,INGEI Chile 2024
+k seco (Norte),Textiles,0.04,1/año,IPCC 2006 Vol. 5 Cuadro 3.3
+k seco (Norte),Madera,0.02,1/año,IPCC 2006 Vol. 5 Cuadro 3.3
+k seco (Norte),Jardines y parques,0.05,1/año,IPCC 2006 Vol. 5 Cuadro 3.3
+k seco (Norte),Pañales,0.05,1/año,IPCC 2006 Vol. 5 Cuadro 3.3
+k seco (Norte),Lodos,0.06,1/año,INGEI Chile 2024
+k húmedo (Sur),Alimentos,0.19,1/año,INGEI Chile 2024
+k húmedo (Sur),Papel y cartón,0.06,1/año,INGEI Chile 2024
+k húmedo (Sur),Textiles,0.06,1/año,IPCC 2006 Vol. 5 Cuadro 3.3
+k húmedo (Sur),Madera,0.03,1/año,IPCC 2006 Vol. 5 Cuadro 3.3
+k húmedo (Sur),Jardines y parques,0.10,1/año,IPCC 2006 Vol. 5 Cuadro 3.3
+k húmedo (Sur),Pañales,0.10,1/año,IPCC 2006 Vol. 5 Cuadro 3.3
+k húmedo (Sur),Lodos,0.19,1/año,INGEI Chile 2024
+MCF,Relleno sanitario anaeróbico,1.0,fracción,INGEI Chile
+MCF,Vertedero,0.3,fracción,INGEI Chile
+MCF,Basural,0.2,fracción,INGEI Chile
+MCF,Gestionado semiaeróbico,0.5,fracción,IPCC 2006 Vol. 5 Cuadro 3.1
+MCF,No gestionado profundo (>5 m),0.8,fracción,IPCC 2006 Vol. 5 Cuadro 3.1
+MCF,No gestionado poco profundo (<5 m),0.4,fracción,IPCC 2006 Vol. 5 Cuadro 3.1
+MCF,No categorizado,0.6,fracción,IPCC 2006 Vol. 5 Cuadro 3.1
+DOCf,Por defecto,0.5,fracción,INGEI Chile 2024
+F,Por defecto,0.5,fracción,INGEI Chile 2024
+OX,Por defecto,0,fracción,IPCC 2006 Vol. 5
