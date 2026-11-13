@@ -1,0 +1,43 @@
+name: Keep the calculator awake
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6 hours, UTC
+  workflow_dispatch:          # adds a "Run workflow" button
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install a headless browser
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+      - name: Open the app and wake it if it is asleep
+        env:
+          APP_URL: https://chile-ghg-calculator.streamlit.app/
+        run: |
+          python - <<'EOF'
+          import os, re
+          from playwright.sync_api import sync_playwright
+
+          url = os.environ["APP_URL"]
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              page.goto(url, wait_until="domcontentloaded", timeout=120_000)
+              page.wait_for_timeout(5_000)
+              button = page.get_by_role("button", name=re.compile("get this app back up", re.I))
+              if button.count():
+                  print("App was asleep: waking it up")
+                  button.first.click()
+                  page.wait_for_timeout(90_000)
+              else:
+                  print("App was awake")
+                  page.wait_for_timeout(20_000)
+              browser.close()
+          EOF
